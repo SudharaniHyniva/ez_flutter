@@ -16,9 +16,10 @@ class _MyHomePageState extends State<MyHomePage> {
       drawer: new Drawer(
           child: new ListView(
         children: <Widget>[
-          new DrawerHeader(
+          new Container(child: new DrawerHeader(child: new CircleAvatar()),color: Colors.tealAccent,),
+         /* new DrawerHeader(
             child: new Text('Header'),
-          ),
+          ),*/
           new ListTile(
             title: new Text('Home'),
             onTap: () {},
@@ -26,6 +27,7 @@ class _MyHomePageState extends State<MyHomePage> {
           new ListTile(
             title: new Text('Student'),
             onTap: () {},
+           // onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new KeyValuePairDropdown("studentFargment"))),
           ),
           new ListTile(
             title: new Text('Staff'),
@@ -76,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       )),
       body: new Center(
         child: new Text(
-          'Center',
+          'Wel-Come',
         ),
       ),
     );
