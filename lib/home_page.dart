@@ -1,54 +1,84 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   static String tag = 'home-page';
+  @override
+  _MyHomePageState createState() => new _MyHomePageState();
+}
 
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final alucard = Hero(
-      tag: 'hero',
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: CircleAvatar(
-          radius: 72.0,
-          backgroundColor: Colors.transparent,
-         // backgroundImage: AssetImage('assets/alucard.jpg'),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text(''),
+      ),
+      drawer: new Drawer(
+          child: new ListView(
+        children: <Widget>[
+          new DrawerHeader(
+            child: new Text('Header'),
+          ),
+          new ListTile(
+            title: new Text('Home'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Student'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Staff'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Attendance'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('SMS/Email'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Leaves'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Assignment'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Task&Reminder'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Events&Holidays'),
+            onTap: () {},
+          ),
+          new Divider(),
+          new ListTile(
+            title: new Text('Contact US'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Sync Web Data'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('Change Password'),
+            onTap: () {},
+          ),
+          new ListTile(
+            title: new Text('LogOut'),
+            onTap: () {},
+          ),
+        ],
+      )),
+      body: new Center(
+        child: new Text(
+          'Center',
         ),
       ),
-    );
-
-    final welcome = Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text(
-        'Welcome Alucard',
-        style: TextStyle(fontSize: 28.0, color: Colors.white),
-      ),
-    );
-
-    final lorem = Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Text(
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec hendrerit condimentum mauris id tempor. Praesent eu commodo lacus. Praesent eget mi sed libero eleifend tempor. Sed at fringilla ipsum. Duis malesuada feugiat urna vitae convallis. Aliquam eu libero arcu.',
-        style: TextStyle(fontSize: 16.0, color: Colors.white),
-      ),
-    );
-
-    final body = Container(
-      width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.all(28.0),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [
-          Colors.blue,
-          Colors.lightBlueAccent,
-        ]),
-      ),
-      child: Column(
-        children: <Widget>[alucard, welcome, lorem],
-      ),
-    );
-
-    return Scaffold(
-      body: body,
     );
   }
 }
