@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:login/fragments/events_holidays.dart';
+import 'package:login/fragments/task_reminder.dart';
+
+import 'fragments/attendance.dart';
+import 'fragments/leaves.dart';
+import 'fragments/sms_Email.dart';
 
 class MyHomePage extends StatefulWidget {
   static String tag = 'home-page';
@@ -27,7 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
           new ListTile(
             title: new Text('Student'),
             onTap: () {},
-           // onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new KeyValuePairDropdown("studentFargment"))),
           ),
           new ListTile(
             title: new Text('Staff'),
@@ -35,15 +40,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new ListTile(
             title: new Text('Attendance'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarViewPage("attendanceFragment"))),
           ),
           new ListTile(
             title: new Text('SMS/Email'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarSMSAndEmailViewPage("sms_Email"))),
           ),
           new ListTile(
             title: new Text('Leaves'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarLeaveViewPage("leavesFrgment"))),
           ),
           new ListTile(
             title: new Text('Assignment'),
@@ -51,11 +56,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new ListTile(
             title: new Text('Task&Reminder'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TaskReminder("task_reminder"))),
           ),
           new ListTile(
             title: new Text('Events&Holidays'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new EventsHolidays("Events"))),
           ),
           new Divider(),
           new ListTile(
