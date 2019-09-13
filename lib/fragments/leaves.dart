@@ -60,7 +60,7 @@ class _TabBarViewState extends State<TabBarLeaveViewPage>
         child: Column(
           children: <Widget>[
             Container(
-//              constraints: BoxConstraints.expand(height: 50),
+              constraints: BoxConstraints.expand(height: 75),
               child: _tabBarLabel(),
             ),
             Expanded(

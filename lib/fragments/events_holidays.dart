@@ -55,7 +55,7 @@ class _TabBarViewState extends State<EventsHolidays>
         child: Column(
           children: <Widget>[
             Container(
-//              constraints: BoxConstraints.expand(height: 50),
+              constraints: BoxConstraints.expand(height: 75),
               child: _tabBarLabel(),
             ),
             Expanded(
