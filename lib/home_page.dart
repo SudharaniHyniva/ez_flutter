@@ -32,7 +32,8 @@ Material myItems(IconData icon, String heading, int color) {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Center(
-                    child: Text(heading,
+                    child: Text(
+                      heading,
                       style: TextStyle(
                         color: new Color(color),
                         fontSize: 20.0,
@@ -72,14 +73,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        //centerTitle: true,
-        //title: new Text('Dashboard'),
-      ),
+          //centerTitle: true,
+          //title: new Text('Dashboard'),
+          ),
       drawer: new Drawer(
           child: new ListView(
         children: <Widget>[
-          new Container(child: new DrawerHeader(child: new CircleAvatar()),color: Colors.tealAccent,),
-         /* new DrawerHeader(
+          new Container(
+            child: new DrawerHeader(child: new CircleAvatar()),
+            color: Colors.tealAccent,
+          ),
+          /* new DrawerHeader(
             child: new Text('Header'),
           ),*/
           new ListTile(
@@ -96,15 +100,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new ListTile(
             title: new Text('Attendance'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarViewPage("attendanceFragment"))),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new TabBarViewPage("attendanceFragment"))),
           ),
           new ListTile(
             title: new Text('SMS/Email'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarSMSAndEmailViewPage("sms_Email"))),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new TabBarSMSAndEmailViewPage("sms_Email"))),
           ),
           new ListTile(
             title: new Text('Leaves'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TabBarLeaveViewPage("leavesFrgment"))),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new TabBarLeaveViewPage("leavesFrgment"))),
           ),
           new ListTile(
             title: new Text('Assignment'),
@@ -112,11 +122,15 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new ListTile(
             title: new Text('Task&Reminder'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new TaskReminder("task_reminder"))),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new TaskReminder("task_reminder"))),
           ),
           new ListTile(
             title: new Text('Events&Holidays'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context)=> new EventsHolidays("Events"))),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                    new EventsHolidays("Events"))),
           ),
           new Divider(),
           new ListTile(
@@ -137,8 +151,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       )),
-      body: StaggeredGridView.count
-        (crossAxisCount: 2,
+      body: StaggeredGridView.count(
+        crossAxisCount: 2,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
         padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
