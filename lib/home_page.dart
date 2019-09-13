@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:login/fragments/events_holidays.dart';
 import 'package:login/fragments/task_reminder.dart';
 
@@ -12,12 +13,67 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => new _MyHomePageState();
 }
 
+Material myItems(IconData icon, String heading, int color) {
+  return Material(
+    color: Colors.white,
+    elevation: 10.0,
+    shadowColor: Colors.black,
+    borderRadius: BorderRadius.circular(20.0),
+    child: Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                //text
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Text(heading,
+                      style: TextStyle(
+                        color: new Color(color),
+                        fontSize: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+                // Icon
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      color: new Color(color),
+                      borderRadius: BorderRadius.circular(24.0),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Icon(
+                          icon,
+                          color: Colors.white,
+                          size: 40.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(''),
+        //centerTitle: true,
+        //title: new Text('Dashboard'),
       ),
       drawer: new Drawer(
           child: new ListView(
@@ -81,10 +137,27 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       )),
-      body: new Center(
-        child: new Text(
-          'Wel-Come',
-        ),
+      body: StaggeredGridView.count
+        (crossAxisCount: 2,
+        crossAxisSpacing: 5.0,
+        mainAxisSpacing: 5.0,
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        children: <Widget>[
+          myItems(Icons.people, "Students", 0xffff9800),
+          myItems(Icons.people, "Staff", 0xffff5722),
+          myItems(Icons.email, "SMS & Email", 0xff3399fe),
+          myItems(Icons.notifications, "Attendance", 0xffe91E63),
+          myItems(Icons.event, "Events", 0xff622F74),
+          myItems(Icons.drafts, "Leaves", 0xff26cb3c),
+        ],
+        staggeredTiles: [
+          StaggeredTile.extent(1, 150.0),
+          StaggeredTile.extent(1, 150.0),
+          StaggeredTile.extent(1, 150.0),
+          StaggeredTile.extent(1, 150.0),
+          StaggeredTile.extent(1, 150.0),
+          StaggeredTile.extent(1, 150.0),
+        ],
       ),
     );
   }

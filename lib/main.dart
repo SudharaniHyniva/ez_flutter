@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:login/dashboard.dart';
 import 'login_page.dart';
 import 'home_page.dart';
 
@@ -18,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: Dashboard(),
+      home: LoginPage(),
       routes: routes,
     );
   }
