@@ -56,7 +56,7 @@ class _TabBarViewState extends State<TaskReminder>
         child: Column(
           children: <Widget>[
             Container(
-              constraints: BoxConstraints.expand(height: 75),
+              constraints: BoxConstraints.expand(height: 60),
               child: _tabBarLabel(),
             ),
             Expanded(
