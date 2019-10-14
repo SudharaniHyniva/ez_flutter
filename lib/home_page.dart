@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:login/fragments/change_password.dart';
 import 'package:login/fragments/events_holidays.dart';
+import 'package:login/fragments/staff.dart';
+import 'package:login/fragments/student.dart';
 import 'package:login/fragments/task_reminder.dart';
+import 'package:login/login_page.dart';
 
 import 'fragments/attendance.dart';
 import 'fragments/leaves.dart';
@@ -73,8 +77,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-          //centerTitle: true,
-          //title: new Text('Dashboard'),
           ),
       drawer: new Drawer(
           child: new ListView(
@@ -83,20 +85,23 @@ class _MyHomePageState extends State<MyHomePage> {
             child: new DrawerHeader(child: new CircleAvatar()),
             color: Colors.tealAccent,
           ),
-          /* new DrawerHeader(
-            child: new Text('Header'),
-          ),*/
           new ListTile(
             title: new Text('Home'),
-            onTap: () {},
-          ),
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+            builder: (BuildContext context) =>
+            new MyHomePage())),
+            ),
           new ListTile(
             title: new Text('Student'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new Student(""))),
           ),
           new ListTile(
             title: new Text('Staff'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new Staff(""))),
           ),
           new ListTile(
             title: new Text('Attendance'),
@@ -143,15 +148,19 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           new ListTile(
             title: new Text('Change Password'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new ChangePassword())),
           ),
           new ListTile(
             title: new Text('LogOut'),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) =>
+                new LoginPage())),
           ),
         ],
       )),
-      body: StaggeredGridView.count(
+      /*body: StaggeredGridView.count(
         crossAxisCount: 2,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
@@ -172,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
           StaggeredTile.extent(1, 150.0),
           StaggeredTile.extent(1, 150.0),
         ],
-      ),
+      ),*/
     );
   }
 }

@@ -1,62 +1,45 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:login/home_page.dart';
+import 'package:login/models/models/auth.dart';
 import 'package:login/utils/popUp.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:native_widgets/native_widgets.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
-import 'models/models/auth.dart';
-import 'fragments/forgot_password.dart';
-
-class LoginPage extends StatefulWidget {
-  LoginPage({this.username});
-  static String tag = 'login-page';
-
-  final String username;
-
-  _LoginPageState createState() => _LoginPageState();
+class ForgotPassword extends StatefulWidget {
+  CreateAccountState createState() => CreateAccountState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class CreateAccountState extends State<ForgotPassword> {
   String _status = 'no-action';
-  String _username, _password;
+  String _username;
 
   final formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController _controllerUsername, _controllerPassword;
+  TextEditingController _controllerUsername;
 
   @override
   initState() {
-    _controllerUsername = TextEditingController(text: widget?.username ?? "");
-    _controllerPassword = TextEditingController();
-   // _loadUsername();
+    _controllerUsername = TextEditingController();
     super.initState();
-    print(_status);
   }
 
-  /*void _loadUsername() async {
-    try {
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _username = _prefs.getString("saved_username") ?? "";
-      var _remeberMe = _prefs.getBool("remember_me") ?? false;
-
-      if (_remeberMe) {
-        _controllerUsername.text = _username ?? "";
-      }
-    } catch (e) {
-      print(e);
-    }
-  }*/
   @override
   Widget build(BuildContext context) {
     final _auth = ScopedModel.of<AuthModel>(context, rebuildOnChange: true);
     return Scaffold(
       key: _scaffoldKey,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          "Forgot Password",
+          textScaleFactor: textScaleFactor,
+        ),
+      ),
       body: SafeArea(
         child: ListView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -65,7 +48,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: 200.0,
               child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                padding: EdgeInsets.all(16.0),
                 child: Image.asset('assets/logo.png'),),
             ),
             Form(
@@ -75,9 +58,9 @@ class _LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   ListTile(
                     title: TextFormField(
-                      decoration: InputDecoration(labelText: 'Username'),
+                      decoration: InputDecoration(labelText: 'Enter username or mobile number'),
                       validator: (val) =>
-                      val.length < 1 ? 'Enter User Name' : null,
+                          val.length < 1 ? 'Username or mobile number Required' : null,
                       onSaved: (val) => _username = val,
                       obscureText: false,
                       keyboardType: TextInputType.text,
@@ -85,26 +68,13 @@ class _LoginPageState extends State<LoginPage> {
                       autocorrect: false,
                     ),
                   ),
-                  ListTile(
-                    title: TextFormField(
-                      decoration: InputDecoration(labelText: 'Password'),
-                      validator: (val) =>
-                      val.length < 1 ? 'Enter Password' : null,
-                      onSaved: (val) => _password = val,
-                      obscureText: true,
-                      controller: _controllerPassword,
-                      keyboardType: TextInputType.text,
-                      autocorrect: false,
-                    ),
-                  ),
                 ],
               ),
             ),
-
             ListTile(
               title: NativeButton(
                 child: Text(
-                  'Login',
+                  'Send OTP',
                   textScaleFactor: textScaleFactor,
                   style: TextStyle(color: Colors.white),
                 ),
@@ -127,38 +97,25 @@ class _LoginPageState extends State<LoginPage> {
                     setState(() => this._status = 'loading');
 
                     _auth
-                        .login(
-                      username: _username.toString().toLowerCase().trim(),
-                      password: _password.toString().trim(),
+                        .forgotPassword(
+                      username: _username.toString().trim(),
                     )
-                    .then((result) {
-                     try {if (result) {
-                        Navigator.of(context).pushReplacementNamed('/home');
+                        .then((result) {
+                      try {if (result) {
+                        Navigator.of(context).pushReplacementNamed('/otp');
                       } else {
                         setState(() => this._status = 'rejected');
-                        showAlertPopup(context, 'Incorrect UserName or Password', _auth.errorMessage);
+                        showAlertPopup(context, 'Unable to generate OTP', _auth.errorMessage);
                       }
 
                       _scaffoldKey.currentState.hideCurrentSnackBar();
-                     } catch (e) {
-                       print('Error with URL: $e');
-                     }
+                      } catch (e) {
+                        print('Error with URL: $e');
+                      }
                     });
                   }
                 },
               ),
-            ),
-            NativeButton(
-              child: Text(
-                'Forgot Password',
-                textScaleFactor: textScaleFactor,
-              ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ForgotPassword()),
-                  );
-                }
             ),
           ],
         ),
