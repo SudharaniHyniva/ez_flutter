@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:login/classes/studyClass.dart';
 import 'package:http/http.dart' as http;
+import 'package:login/classes/users.dart';
+import 'package:login/utils/webConfig.dart';
 
 class Student extends StatefulWidget {
   Student(String s);
@@ -13,20 +15,34 @@ class Student extends StatefulWidget {
   }
 }
 class StudentClassList extends State<Student>{
-  StudyClass _currentUser;
+  ClassNameAndSection _currentUser;
 
-  final String uri = 'https://eazyschool.in//api/class';
+  final String url = 'https://eazyschool.in//api/class/319398/A';
 
-  Future<List<StudyClass>> _fetchUsers() async {
-    var response = await http.get(uri);
+  Map<String, String> headers = {
+    HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
+    HttpHeaders.acceptHeader: "application/json",
+    HttpHeaders.contentTypeHeader: "application/json"
+  };
+  Future<List<ClassNameAndSection>> _fetchUsers() async {
+    var response = await http.get(url, headers: headers);
 
     if (response.statusCode == 200) {
-      final items = json.decode(response.body).cast<Map<String, dynamic>>();
-      List<StudyClass> listOfUsers = items.map<StudyClass>((json) {
-        return StudyClass.fromJson(json);
+     // print(json.decode(response.body)['classNameVOs']);
+      final items = json.decode(response.body)['classNameVOs'].cast<Map<String, dynamic>>();
+  List<ClassNameAndSection> classList= new List<ClassNameAndSection>();
+      List<classNameVOs> listOfUsers = items.map<classNameVOs>((items) {
+        var _item=classNameVOs.fromJson(items);
+            for(var i = 0; i < _item.studyClassList.length; i++){
+              ClassNameAndSection cls=new ClassNameAndSection();
+              var sections=_item.className +"  " + _item.studyClassList[i].section;
+              cls.classNameAndSection=sections;
+              classList.add(cls);
+        }
+        print(classList.length);
+        return classNameVOs.fromJson(items);
       }).toList();
-
-      return listOfUsers;
+      return classList;
     }
     else {
       throw Exception('Failed to load internet');
@@ -45,37 +61,33 @@ class StudentClassList extends State<Student>{
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            FutureBuilder<List<StudyClass>>(
+            FutureBuilder<List<ClassNameAndSection>>(
                 future: _fetchUsers(),
                 builder: (BuildContext context,
-                    AsyncSnapshot<List<StudyClass>> snapshot) {
+                    AsyncSnapshot<List<ClassNameAndSection>> snapshot) {
                   if (!snapshot.hasData) return CircularProgressIndicator();
-                  return DropdownButton<StudyClass>(
+                  return DropdownButton<ClassNameAndSection>(
                     items: snapshot.data
-                        .map((user) => DropdownMenuItem<StudyClass>(
-                      child: Text(user.className+""+user.noOfSection),
+                        .map((user) => DropdownMenuItem<ClassNameAndSection>(
+                      child: Text(user.classNameAndSection),
                       value: user,
                     ))
                         .toList(),
-                    onChanged: (StudyClass value) {
+                    onChanged: (ClassNameAndSection value) {
                       setState(() {
-                        _currentUser = value;
+                       // _currentUser = value;
                       });
                     },
                     isExpanded: false,
                     //value: _currentUser,
-                    hint: Text('Select User'),
+                    hint: Text('Select Class'),
                   );
                 }),
-            SizedBox(height: 20.0),
-           _currentUser != null
+            SizedBox(height: 0.0),
+             /*_currentUser != null
                 ? Text("Name: " +
-                _currentUser.className +
-                "\n Email: " +
-                _currentUser.noOfSection +
-                "\n Username: " +
-                _currentUser.sortingOrder)
-                : Text("No Classes found"),
+                _currentUser.classNameAndSection)
+                : Text("No Classes found"),*/
           ],
         ),
       ),

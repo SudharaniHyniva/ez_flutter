@@ -1,22 +1,19 @@
 class StudyClass {
   int id;
-  String className;
-  String noOfSection;
-  String sortingOrder;
+  String section;
+  int sectionCapacity;
 
   StudyClass({
     this.id,
-    this.className,
-    this.noOfSection,
-    this.sortingOrder,
+    this.section,
+    this.sectionCapacity,
   });
 
   factory StudyClass.fromJson(Map<String, dynamic> json) {
     return StudyClass(
       id: json['id'],
-      className: json['className'],
-      noOfSection: json['noOfSection'],
-      sortingOrder:  json['sortingOrder'],
+      section: json['section'],
+      sectionCapacity: json['sectionCapacity'],
     );
   }
 }

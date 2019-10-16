@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -8,7 +6,6 @@ import 'package:login/utils/popUp.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:native_widgets/native_widgets.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ResetPassword extends StatefulWidget {
   CreateAccountState createState() => CreateAccountState();

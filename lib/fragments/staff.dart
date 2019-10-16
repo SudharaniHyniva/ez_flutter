@@ -52,7 +52,7 @@ class StudentClassList extends State<Staff>{
                   return DropdownButton<StudyClass>(
                     items: snapshot.data
                         .map((user) => DropdownMenuItem<StudyClass>(
-                      child: Text(user.className+""+user.noOfSection),
+                     // child: Text(user.className),
                       value: user,
                     ))
                         .toList(),
@@ -67,14 +67,14 @@ class StudentClassList extends State<Staff>{
                   );
                 }),
             SizedBox(height: 20.0),
-            _currentUser != null
+            /*_currentUser != null
                 ? Text("Name: " +
                 _currentUser.className +
                 "\n Email: " +
                 _currentUser.noOfSection +
                 "\n Username: " +
                 _currentUser.sortingOrder)
-                : Text("No Classes found"),
+                : Text("No Classes found"),*/
           ],
         ),
       ),

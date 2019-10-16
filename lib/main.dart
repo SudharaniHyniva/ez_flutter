@@ -5,7 +5,6 @@ import 'package:login/models/models/auth.dart';
 import 'package:login/fragments/forgot_password.dart';
 import 'package:persist_theme/data/models/theme_model.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'fragments/change_password.dart';
 import 'fragments/resetPassword.dart';
 import 'fragments/verify_forgot_password.dart';
 import 'home_page.dart';
@@ -28,11 +27,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    /*try {
-      _auth.loadSettings();
-    } catch (e) {
-      print("Error Loading Settings: $e");
-    }*/
     try {
       _model.loadFromDisk();
     } catch (e) {

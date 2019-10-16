@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:login/home_page.dart';
 import 'package:login/utils/popUp.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:native_widgets/native_widgets.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'main.dart';
 import 'models/models/auth.dart';
 import 'fragments/forgot_password.dart';
 
@@ -34,24 +31,10 @@ class _LoginPageState extends State<LoginPage> {
   initState() {
     _controllerUsername = TextEditingController(text: widget?.username ?? "");
     _controllerPassword = TextEditingController();
-   // _loadUsername();
     super.initState();
     print(_status);
   }
 
-  /*void _loadUsername() async {
-    try {
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _username = _prefs.getString("saved_username") ?? "";
-      var _remeberMe = _prefs.getBool("remember_me") ?? false;
-
-      if (_remeberMe) {
-        _controllerUsername.text = _username ?? "";
-      }
-    } catch (e) {
-      print(e);
-    }
-  }*/
   @override
   Widget build(BuildContext context) {
     final _auth = ScopedModel.of<AuthModel>(context, rebuildOnChange: true);
