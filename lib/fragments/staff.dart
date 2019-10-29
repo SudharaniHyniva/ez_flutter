@@ -1,34 +1,150 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:login/classes/studyClass.dart';
+import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:login/classes/staff.dart';
 
 class Staff extends StatefulWidget {
   Staff(String s);
-  @override
-  StudentClassList createState() {
-    return new StudentClassList();
+  _StaffListState createState() => _StaffListState();
+}
+
+class StaffType {
+  String name;
+  StaffType(this.name);
+  static List<StaffType> getStaff() {
+    return <StaffType>[
+      StaffType('All'),
+      StaffType('Teaching'),
+      StaffType('Non-Teaching'),
+      StaffType('Management'),
+    ];
   }
 }
-class StudentClassList extends State<Staff>{
-  StudyClass _currentUser;
 
-  final String uri = 'https://eazyschool.in//api/class';
+class _StaffListState extends State<Staff> {
+  List<StaffType> _staffList = StaffType.getStaff();
+  List<DropdownMenuItem<StaffType>> _dropdownStaffItems;
+  StaffType _selectedStafff;
 
-  Future<List<StudyClass>> _fetchUsers() async {
-    var response = await http.get(uri);
+  @override
+  void initState() {
+    _dropdownStaffItems = buildDropdownMenuItems(_staffList);
+    _selectedStafff = _dropdownStaffItems[0].value;
+    super.initState();
+  }
 
-    if (response.statusCode == 200) {
-      final items = json.decode(response.body).cast<Map<String, dynamic>>();
-      List<StudyClass> listOfUsers = items.map<StudyClass>((json) {
-        return StudyClass.fromJson(json);
-      }).toList();
+  List<DropdownMenuItem<StaffType>> buildDropdownMenuItems(List staff) {
+    List<DropdownMenuItem<StaffType>> items = List();
+    for (StaffType staffType in staff) {
+      items.add(
+        DropdownMenuItem(
+          value: staffType,
+          child: Text(staffType.name),
+        ),
+      );
+    }
+    return items;
+  }
 
-      return listOfUsers;
-    } else {
-      throw Exception('Failed to load internet');
+  onChangeDropdownItem(StaffType selectedStaffType) {
+    setState(() {
+      _selectedStafff = selectedStaffType;
+    });
+  }
+
+  final String uri = 'https://eazyschool.in/api/staffDetails/319398/A';
+  Map<String, String> headers = {
+    HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
+    HttpHeaders.acceptHeader: "application/json",
+    HttpHeaders.contentTypeHeader: "application/json"
+  };
+
+  // ignore: missing_return
+  Future<List<staffPersonAccountDetailsVOS>> _fetchUsers() async {
+    // Getting All Staff Details
+    if (_selectedStafff.name == 'All') {
+      var response = await http.get(uri, headers: headers);
+      print(uri);
+      if (response.statusCode == 200) {
+        final items = json
+            .decode(response.body)['staffPersonAccountDetailsVOS']
+            .cast<Map<String, dynamic>>();
+        print(items);
+        List<staffPersonAccountDetailsVOS> listOfUsers =
+            items.map<staffPersonAccountDetailsVOS>((items) {
+          return staffPersonAccountDetailsVOS.fromJson(items);
+        }).toList();
+        return listOfUsers;
+      } else {
+        throw Exception('Failed to load internet');
+      }
+    }
+    // Getting Teaching Staff Details
+    else if (_selectedStafff.name == 'Teaching') {
+      var response = await http.get(uri, headers: headers);
+      print(uri);
+      if (response.statusCode == 200) {
+        final items = json
+            .decode(response.body)['staffPersonAccountDetailsVOS']
+            .cast<Map<String, dynamic>>();
+        List<staffPersonAccountDetailsVOS> teachingList =
+            new List<staffPersonAccountDetailsVOS>();
+        items.map<staffPersonAccountDetailsVOS>((items) {
+          staffPersonAccountDetailsVOS obj =
+              staffPersonAccountDetailsVOS.fromJson(items);
+          if (obj.roleType == 'T') {
+            teachingList.add(obj);
+          }
+        }).toList();
+        return teachingList;
+      } else {
+        throw Exception('Failed to load internet');
+      }
+    }
+    // Getting Non-Teaching Staff Details
+    else if (_selectedStafff.name == 'Non-Teaching') {
+      var response = await http.get(uri, headers: headers);
+      print(uri);
+      if (response.statusCode == 200) {
+        final items = json
+            .decode(response.body)['staffPersonAccountDetailsVOS']
+            .cast<Map<String, dynamic>>();
+        List<staffPersonAccountDetailsVOS> NonTeachingList =
+            new List<staffPersonAccountDetailsVOS>();
+        items.map<staffPersonAccountDetailsVOS>((items) {
+          staffPersonAccountDetailsVOS obj =
+              staffPersonAccountDetailsVOS.fromJson(items);
+          if (obj.roleType == 'N') {
+            NonTeachingList.add(obj);
+          }
+        }).toList();
+        return NonTeachingList;
+      } else {
+        throw Exception('Failed to load internet');
+      }
+    }
+    // Getting Management Staff Details
+    else if (_selectedStafff.name == 'Management') {
+      var response = await http.get(uri, headers: headers);
+      print(uri);
+      if (response.statusCode == 200) {
+        final items = json
+            .decode(response.body)['staffPersonAccountDetailsVOS']
+            .cast<Map<String, dynamic>>();
+        List<staffPersonAccountDetailsVOS> ManagementStaff =
+            new List<staffPersonAccountDetailsVOS>();
+        items.map<staffPersonAccountDetailsVOS>((items) {
+          staffPersonAccountDetailsVOS obj =
+              staffPersonAccountDetailsVOS.fromJson(items);
+          if (obj.roleType == 'M') {
+            ManagementStaff.add(obj);
+          }
+        }).toList();
+        return ManagementStaff;
+      } else {
+        throw Exception('Failed to load internet');
+      }
     }
   }
 
@@ -39,142 +155,47 @@ class StudentClassList extends State<Staff>{
         centerTitle: true,
         title: Text('Staff'),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          //mainAxisSize: MainAxisSize.max,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            FutureBuilder<List<StudyClass>>(
+            Container(
+              child: DropdownButton(
+                value: _selectedStafff,
+                items: _dropdownStaffItems,
+                onChanged: onChangeDropdownItem,
+              ),
+            ),
+            Container(
+              height: 600.0,
+              child: FutureBuilder<List<staffPersonAccountDetailsVOS>>(
                 future: _fetchUsers(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<List<StudyClass>> snapshot) {
-                  if (!snapshot.hasData) return CircularProgressIndicator();
-                  return DropdownButton<StudyClass>(
-                    items: snapshot.data
-                        .map((user) => DropdownMenuItem<StudyClass>(
-                     // child: Text(user.className),
-                      value: user,
-                    ))
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Center(child: CircularProgressIndicator());
+                  print(snapshot.data);
+                  return ListView(
+                    shrinkWrap: true,
+                    children: snapshot.data
+                        .map((user) => ListTile(
+                              title: Text(user.firstName +" "+ user.lastName),
+                              subtitle: Text(
+                                  user.roleName +" "+ user.mobileNumber),
+                              leading: CircleAvatar(
+                                radius: 30.0,
+                                backgroundImage:
+                                    NetworkImage(user.imageUrl, scale: 1.0),
+                                backgroundColor: Colors.red,
+                              ),
+                            ))
                         .toList(),
-                    onChanged: (StudyClass value) {
-                      setState(() {
-                        _currentUser = value;
-                      });
-                    },
-                    isExpanded: false,
-                    //value: _currentUser,
-                    hint: Text('Select User'),
                   );
-                }),
-            SizedBox(height: 20.0),
-            /*_currentUser != null
-                ? Text("Name: " +
-                _currentUser.className +
-                "\n Email: " +
-                _currentUser.noOfSection +
-                "\n Username: " +
-                _currentUser.sortingOrder)
-                : Text("No Classes found"),*/
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
-/*
-
-import 'package:flutter/material.dart';
-
-class Staff extends StatefulWidget {
-  Staff() : super();
-
-  final String title = "DropDown Demo";
-
-  @override
-  DropDownState createState() => DropDownState();
-}
-
-class Company {
-  int id;
-  String name;
-
-  Company(this.id, this.name);
-
-  static List<Company> getCompanies() {
-    return <Company>[
-      Company(1, 'Apple'),
-      Company(2, 'Google'),
-      Company(3, 'Samsung'),
-      Company(4, 'Sony'),
-      Company(5, 'LG'),
-    ];
-  }
-}
-
-class DropDownState extends State<Staff> {
-  //
-  List<Company> _companies = Company.getCompanies();
-  List<DropdownMenuItem<Company>> _dropdownMenuItems;
-  Company _selectedCompany;
-
-  @override
-  void initState() {
-    _dropdownMenuItems = buildDropdownMenuItems(_companies);
-    _selectedCompany = _dropdownMenuItems[0].value;
-    super.initState();
-  }
-
-  List<DropdownMenuItem<Company>> buildDropdownMenuItems(List companies) {
-    List<DropdownMenuItem<Company>> items = List();
-    for (Company company in companies) {
-      items.add(
-        DropdownMenuItem(
-          value: company,
-          child: Text(company.name),
-        ),
-      );
-    }
-    return items;
-  }
-
-  onChangeDropdownItem(Company selectedCompany) {
-    setState(() {
-      _selectedCompany = selectedCompany;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Staff"),
-        ),
-        body: new Container(
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text("Select Staff"),
-                SizedBox(
-                  height: 10.0,
-                ),
-                DropdownButton(
-                  value: _selectedCompany,
-                  items: _dropdownMenuItems,
-                  onChanged: onChangeDropdownItem,
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                Text('Selected: ${_selectedCompany.name}'),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}*/
