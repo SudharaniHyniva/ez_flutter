@@ -71,11 +71,14 @@ class _StaffListState extends State<Staff> {
             .decode(response.body)['staffPersonAccountDetailsVOS']
             .cast<Map<String, dynamic>>();
         print(items);
-        List<staffPersonAccountDetailsVOS> listOfUsers =
+        List<staffPersonAccountDetailsVOS> staffList =
             items.map<staffPersonAccountDetailsVOS>((items) {
           return staffPersonAccountDetailsVOS.fromJson(items);
         }).toList();
-        return listOfUsers;
+        staffList.sort((a, b) {
+          return a.firstName.toLowerCase().compareTo(b.firstName.toLowerCase());
+        });
+        return staffList;
       } else {
         throw Exception('Failed to load internet');
       }
@@ -96,6 +99,11 @@ class _StaffListState extends State<Staff> {
           if (obj.roleType == 'T') {
             teachingList.add(obj);
           }
+          teachingList.sort((a, b) {
+            return a.firstName
+                .toLowerCase()
+                .compareTo(b.firstName.toLowerCase());
+          });
         }).toList();
         return teachingList;
       } else {
@@ -110,6 +118,7 @@ class _StaffListState extends State<Staff> {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
             .cast<Map<String, dynamic>>();
+        // ignore: non_constant_identifier_names
         List<staffPersonAccountDetailsVOS> NonTeachingList =
             new List<staffPersonAccountDetailsVOS>();
         items.map<staffPersonAccountDetailsVOS>((items) {
@@ -118,6 +127,11 @@ class _StaffListState extends State<Staff> {
           if (obj.roleType == 'N') {
             NonTeachingList.add(obj);
           }
+          NonTeachingList.sort((a, b) {
+            return a.firstName
+                .toLowerCase()
+                .compareTo(b.firstName.toLowerCase());
+          });
         }).toList();
         return NonTeachingList;
       } else {
@@ -132,6 +146,7 @@ class _StaffListState extends State<Staff> {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
             .cast<Map<String, dynamic>>();
+        // ignore: non_constant_identifier_names
         List<staffPersonAccountDetailsVOS> ManagementStaff =
             new List<staffPersonAccountDetailsVOS>();
         items.map<staffPersonAccountDetailsVOS>((items) {
@@ -140,6 +155,11 @@ class _StaffListState extends State<Staff> {
           if (obj.roleType == 'M') {
             ManagementStaff.add(obj);
           }
+          ManagementStaff.sort((a, b) {
+            return a.firstName
+                .toLowerCase()
+                .compareTo(b.firstName.toLowerCase());
+          });
         }).toList();
         return ManagementStaff;
       } else {
@@ -178,9 +198,15 @@ class _StaffListState extends State<Staff> {
                     shrinkWrap: true,
                     children: snapshot.data
                         .map((user) => ListTile(
-                              title: Text(user.firstName +" "+ user.lastName),
+                              title: Text(
+                                user.firstName + " " + user.lastName,
+                                style: new TextStyle(
+                                    fontSize: 18.0, color: Colors.black),
+                              ),
                               subtitle: Text(
-                                  user.roleName +" "+ user.mobileNumber),
+                                user.roleName + " ," + user.mobileNumber,
+                                style: new TextStyle(fontSize: 15.0),
+                              ),
                               leading: CircleAvatar(
                                 radius: 30.0,
                                 backgroundImage:
