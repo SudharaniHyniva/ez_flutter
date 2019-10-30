@@ -5,16 +5,18 @@ import 'package:login/fragments/staff.dart';
 import 'package:login/fragments/student.dart';
 import 'package:login/fragments/task_reminder.dart';
 import 'package:login/login_page.dart';
-
+import 'package:scoped_model/scoped_model.dart';
 import 'fragments/attendance.dart';
 import 'fragments/leaves.dart';
 import 'fragments/sms_Email.dart';
+import 'models/models/auth.dart';
 
 class MyHomePage extends StatefulWidget {
   static String tag = 'home-page';
   @override
   _MyHomePageState createState() => new _MyHomePageState();
 }
+/*
 
 Material myItems(IconData icon, String heading, int color) {
   return Material(
@@ -70,96 +72,228 @@ Material myItems(IconData icon, String heading, int color) {
     ),
   );
 }
+*/
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    final _auth = ScopedModel.of<AuthModel>(context, rebuildOnChange: true);
     return new Scaffold(
-      appBar: new AppBar(
+        appBar: new AppBar(),
+        drawer: Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: Colors.blueAccent,
+            primaryColor: Colors.white,
           ),
-      drawer: new Drawer(
-          child: new ListView(
-        children: <Widget>[
-          new Container(
-            child: new DrawerHeader(child: new CircleAvatar()),
-            color: Colors.tealAccent,
-          ),
-          new ListTile(
-            title: new Text('Home'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-            builder: (BuildContext context) =>
-            new MyHomePage())),
-            ),
-          new ListTile(
-            title: new Text('Student'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new Student(""))),
-          ),
-          new ListTile(
-            title: new Text('Staff'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new Staff(""))),
-          ),
-          new ListTile(
-            title: new Text('Attendance'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    new TabBarViewPage("attendanceFragment"))),
-          ),
-          new ListTile(
-            title: new Text('SMS/Email'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    new TabBarSMSAndEmailViewPage("sms_Email"))),
-          ),
-          new ListTile(
-            title: new Text('Leaves'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    new TabBarLeaveViewPage("leavesFrgment"))),
-          ),
-          new ListTile(
-            title: new Text('Assignment'),
-            onTap: () {},
-          ),
-          new ListTile(
-            title: new Text('Task&Reminder'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    new TaskReminder("task_reminder"))),
-          ),
-          new ListTile(
-            title: new Text('Events&Holidays'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    new EventsHolidays("Events"))),
-          ),
-          new Divider(),
-          new ListTile(
-            title: new Text('Contact US'),
-            onTap: () {},
-          ),
-          new ListTile(
-            title: new Text('Sync Web Data'),
-            onTap: () {},
-          ),
-          new ListTile(
-            title: new Text('Change Password'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new ChangePassword())),
-          ),
-          new ListTile(
-            title: new Text('LogOut'),
-            onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) =>
-                new LoginPage())),
-          ),
-        ],
-      )),
-      /*body: StaggeredGridView.count(
+          child: new Drawer(
+              child: new ListView(
+            children: <Widget>[
+              new Container(
+                child: new DrawerHeader(
+                    child: new CircleAvatar(
+                  child: Icon(
+                    Icons.person,
+                    size: 60,
+                    color: Colors.black,
+                  ),
+                )),
+                color: Colors.blueAccent,
+              ),
+              new ListTile(
+                title: new Text(
+                  'Home',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                leading: Icon(
+                  Icons.home,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new MyHomePage())),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.people,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Student',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new Student(""))),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.people,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Staff',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new Staff(""))),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.person,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Attendance',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new Attendance())),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.textsms,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'SMS/Email',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        new TabBarSMSAndEmailViewPage("sms_Email"))),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.sms_failed,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Leaves',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new Leaves())),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.work,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Assignment',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () {},
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.email,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Task&Reminder',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new TaskReminder())),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.photo_library,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Events&Holidays',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new EventsHolidays())),
+              ),
+              // new Divider(),
+              new ListTile(
+                leading: Icon(
+                  Icons.contact_phone,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Contact US',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () {},
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.lock,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'Change Password',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new ChangePassword())),
+              ),
+              new ListTile(
+                leading: Icon(
+                  Icons.exit_to_app,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                title: new Text(
+                  'LogOut',
+                  style: new TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () => Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (BuildContext context) => new LoginPage())),
+              ),
+            ],
+          )),
+          /*body: StaggeredGridView.count(
         crossAxisCount: 2,
         crossAxisSpacing: 5.0,
         mainAxisSpacing: 5.0,
@@ -181,6 +315,6 @@ class _MyHomePageState extends State<MyHomePage> {
           StaggeredTile.extent(1, 150.0),
         ],
       ),*/
-    );
+        ));
   }
 }
