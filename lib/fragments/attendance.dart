@@ -1,78 +1,67 @@
-import "package:flutter/material.dart";
-import 'package:login/const/color_const.dart';
-import 'package:login/const/page_name_const.dart';
+import 'package:flutter/material.dart';
+import 'package:login/fragments/staff_attendance.dart';
+import 'package:login/fragments/view_events.dart';
+import 'package:login/fragments/view_holidays.dart';
 
-class TabBarViewPage extends StatefulWidget {
-  TabBarViewPage(String s);
-
+class Attendance extends StatefulWidget {
+  //TaskReminder(String s);
   @override
-  _TabBarViewState createState() => _TabBarViewState();
+  _Attendance createState() => _Attendance();
 }
 
-class _TabBarViewState extends State<TabBarViewPage>
+class _Attendance extends State<Attendance>
     with SingleTickerProviderStateMixin {
-  List<Widget> _tabTwoParameters() => [
-        Tab(
-          text: "Student Attendance",
-        ),
-        Tab(
-          text: "Staff Attendance",
-        ),
-      ];
+  TabController _tabController;
 
-  TabBar _tabBarLabel() => TabBar(
-        tabs: _tabTwoParameters(),
-        labelColor: RED,
-        labelPadding: EdgeInsets.symmetric(vertical: 10),
-        labelStyle: TextStyle(fontSize: 20),
-        unselectedLabelColor: BLUE_LIGHT,
-        unselectedLabelStyle: TextStyle(fontSize: 14),
-        onTap: (index) {
-          var content = "";
-          switch (index) {
-            case 0:
-              content = "Student Attendance";
-              break;
-            case 1:
-              content = "Staff Attendance";
-              break;
-            default:
-              content = "Other";
-              break;
-          }
-          print("You are clicking the $content");
-        },
-      );
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: 0,
+    )..addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(PageName.ATTENDANCE),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(height: 60),
-              child: _tabBarLabel(),
+        title: Text("Attendance"),
+        bottom: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.black,
+          //controller: _tabController,
+          tabs: <Tab>[
+            Tab(
+              text: "Student",
+
             ),
-            Expanded(
-              child: Container(
-                child: TabBarView(children: [
-                  Container(
-                    child: Text("Student Attendance"),
-                  ),
-                  Container(
-                    child: Text("Staff Attendance"),
-                  ),
-                ]),
-              ),
-            )
+            Tab(
+              text: "Staff",
+            ),
           ],
+          controller: _tabController,
         ),
+      ),
+      body: TabBarView(
+        children: <Widget>[
+          Tab(
+            text: "hjvaldksv",
+          ),
+          StaffAttendance(),
+        ],
+        controller: _tabController,
       ),
     );
   }

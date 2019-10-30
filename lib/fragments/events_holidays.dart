@@ -1,78 +1,63 @@
-import "package:flutter/material.dart";
-import 'package:login/const/color_const.dart';
-import 'package:login/const/page_name_const.dart';
+import 'package:flutter/material.dart';
+import 'package:login/fragments/view_events.dart';
+import 'package:login/fragments/view_holidays.dart';
 
 class EventsHolidays extends StatefulWidget {
-  EventsHolidays(String s);
-
+  //TaskReminder(String s);
   @override
-  _TabBarViewState createState() => _TabBarViewState();
+  _EventsHolidays createState() => _EventsHolidays();
 }
 
-class _TabBarViewState extends State<EventsHolidays>
+class _EventsHolidays extends State<EventsHolidays>
     with SingleTickerProviderStateMixin {
-  List<Widget> _tabTwoParameters() => [
-        Tab(
-          text: "Events",
-        ),
-        Tab(
-          text: "Holidays",
-        ),
-      ];
+  TabController _tabController;
 
-  TabBar _tabBarLabel() => TabBar(
-        tabs: _tabTwoParameters(),
-        labelColor: RED,
-        labelPadding: EdgeInsets.symmetric(vertical: 10),
-        labelStyle: TextStyle(fontSize: 20),
-        unselectedLabelColor: BLUE_LIGHT,
-        unselectedLabelStyle: TextStyle(fontSize: 14),
-        onTap: (index) {
-          var content = "";
-          switch (index) {
-            case 0:
-              content = "Events";
-              break;
-            case 1:
-              content = "Holidays";
-              break;
-            default:
-              content = "Other";
-              break;
-          }
-          print("You are clicking the $content");
-        },
-      );
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: 0,
+    )..addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(PageName.EventsHolidays),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(height: 60),
-              child: _tabBarLabel(),
+        title: Text("Events & Holidays"),
+        bottom: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.black,
+          //controller: _tabController,
+          tabs: <Tab>[
+            Tab(
+              text: "Events",
             ),
-            Expanded(
-              child: Container(
-                child: TabBarView(children: [
-                  Container(
-                    child: Text("Events"),
-                  ),
-                  Container(
-                    child: Text("Holidays"),
-                  ),
-                ]),
-              ),
-            )
+            Tab(
+              text: "Holidays",
+            ),
           ],
+          controller: _tabController,
         ),
+      ),
+      body: TabBarView(
+        children: <Widget>[
+          new ViewEvents(),
+          new ViewHoliDays(),
+        ],
+        controller: _tabController,
       ),
     );
   }

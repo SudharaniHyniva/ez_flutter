@@ -1,78 +1,89 @@
-import "package:flutter/material.dart";
-import 'package:login/const/color_const.dart';
-import 'package:login/const/page_name_const.dart';
+import 'package:flutter/material.dart';
+import 'package:login/fragments/add_Task.dart';
+import 'package:login/fragments/view_reminders.dart';
+import 'package:login/fragments/view_tasks.dart';
+
+import 'add_Reminder.dart';
 
 class TaskReminder extends StatefulWidget {
-  TaskReminder(String s);
-
+  //TaskReminder(String s);
   @override
-  _TabBarViewState createState() => _TabBarViewState();
+  _TaskReminder createState() => _TaskReminder();
 }
 
-class _TabBarViewState extends State<TaskReminder>
+class _TaskReminder extends State<TaskReminder>
     with SingleTickerProviderStateMixin {
-  List<Widget> _tabTwoParameters() => [
-        Tab(
-          text: "Task",
-        ),
-        Tab(
-          text: "Reminder",
-        ),
-      ];
+  TabController _tabController;
 
-  TabBar _tabBarLabel() => TabBar(
-        tabs: _tabTwoParameters(),
-        labelColor: RED,
-        labelPadding: EdgeInsets.symmetric(vertical: 10),
-        labelStyle: TextStyle(fontSize: 20),
-        unselectedLabelColor: BLUE_LIGHT,
-        unselectedLabelStyle: TextStyle(fontSize: 14),
-        onTap: (index) {
-          var content = "";
-          switch (index) {
-            case 0:
-              content = "Tasks";
-              break;
-            case 1:
-              content = "Reminder";
-              break;
-            default:
-              content = "Other";
-              break;
-          }
-          print("You are clicking the $content");
-        },
-      );
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: 0,
+    )..addListener(() {
+      setState(() {});
+    });
+  }
+ /* @override
+  void initState() {
+    super.initState();
+    _tabController = new TabController(vsync: this, length: 2);
+
+  }
+*/
+ @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(PageName.TaskReminder),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(height: 60),
-              child: _tabBarLabel(),
+        title: Text("Task & Reminder"),
+        bottom: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.black,
+          //controller: _tabController,
+          tabs: <Tab>[
+            Tab(
+              text: "Task",
             ),
-            Expanded(
-              child: Container(
-                child: TabBarView(children: [
-                  Container(
-                    child: Text("There are no tasks"),
-                  ),
-                  Container(
-                    child: Text("There are no reminders"),
-                  ),
-                ]),
-              ),
-            )
+            Tab(
+              text: "Reminder",
+            ),
           ],
+          controller: _tabController,
         ),
+      ),
+      body: TabBarView(
+        children: <Widget>[
+          new ViewTasks(),
+          new ViewReminders(),
+        ],
+        controller: _tabController,
+      ),
+      floatingActionButton: _tabController.index ==0
+          ? FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        child: Icon(Icons.add),
+        onPressed: () {Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddTask()),
+        );},
+      )
+          : FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        child: Icon(Icons.add),
+        onPressed: () {Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddReminder()),
+        );},
       ),
     );
   }

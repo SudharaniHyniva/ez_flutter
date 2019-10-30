@@ -187,7 +187,7 @@ class _StaffListState extends State<Staff> {
               ),
             ),
             Container(
-              height: 600.0,
+              height: 550.0,
               child: FutureBuilder<List<staffPersonAccountDetailsVOS>>(
                 future: _fetchUsers(),
                 builder: (context, snapshot) {

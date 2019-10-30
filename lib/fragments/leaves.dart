@@ -2,14 +2,11 @@ import "package:flutter/material.dart";
 import 'package:login/const/color_const.dart';
 import 'package:login/const/page_name_const.dart';
 
-class TabBarLeaveViewPage extends StatefulWidget {
-  TabBarLeaveViewPage(String s);
-
+class Leaves extends StatefulWidget {
   @override
-  _TabBarViewState createState() => _TabBarViewState();
+  _Leaves createState() => _Leaves();
 }
-
-class _TabBarViewState extends State<TabBarLeaveViewPage>
+class _Leaves extends State<Leaves>
     with SingleTickerProviderStateMixin {
   List<Widget> _tabTwoParameters() => [
         Tab(
@@ -69,13 +66,13 @@ class _TabBarViewState extends State<TabBarLeaveViewPage>
               child: Container(
                 child: TabBarView(children: [
                   Container(
-                    child: Text("My Leaves"),
+                    child: Text("Currently there are no leave request for you"),
                   ),
                   Container(
-                    child: Text("Student Leaves"),
+                    child: Text("Currently there are no staff leave request"),
                   ),
                   Container(
-                    child: Text("Staff Leaves"),
+                    child: Text("Currently there are no student leave request"),
                   ),
                 ]),
               ),
