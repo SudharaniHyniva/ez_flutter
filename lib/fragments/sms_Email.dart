@@ -1,78 +1,59 @@
-import "package:flutter/material.dart";
-import 'package:login/const/color_const.dart';
-import 'package:login/const/page_name_const.dart';
+import 'package:flutter/material.dart';
+import 'package:login/fragments/send_Email.dart';
+import 'package:login/fragments/send_sms.dart';
 
-class TabBarSMSAndEmailViewPage extends StatefulWidget {
-  TabBarSMSAndEmailViewPage(String s);
-
+class SmsAndEmail extends StatefulWidget {
   @override
-  _TabBarViewState createState() => _TabBarViewState();
+  _SmsAndEmail createState() => _SmsAndEmail();
 }
 
-class _TabBarViewState extends State<TabBarSMSAndEmailViewPage>
+class _SmsAndEmail extends State<SmsAndEmail>
     with SingleTickerProviderStateMixin {
-  List<Widget> _tabTwoParameters() => [
-        Tab(
-          text: "Send SMS",
-        ),
-        Tab(
-          text: "Send Email",
-        ),
-      ];
-
-  TabBar _tabBarLabel() => TabBar(
-        tabs: _tabTwoParameters(),
-        labelColor: RED,
-        labelPadding: EdgeInsets.symmetric(vertical: 10),
-        labelStyle: TextStyle(fontSize: 20),
-        unselectedLabelColor: BLUE_LIGHT,
-        unselectedLabelStyle: TextStyle(fontSize: 14),
-        onTap: (index) {
-          var content = "";
-          switch (index) {
-            case 0:
-              content = "Send SMS";
-              break;
-            case 1:
-              content = "Send Email";
-              break;
-            default:
-              content = "Other";
-              break;
-          }
-          print("You are clicking the $content");
-        },
-      );
-
+  TabController _tabController;
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+      initialIndex: 0,
+    )..addListener(() {
+        setState(() {});
+      });
+  }
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(PageName.SMS),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: Column(
-          children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(height: 60),
-              child: _tabBarLabel(),
+        title: Text("SMS / Email"),
+        bottom: TabBar(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.black,
+          indicatorColor: Colors.black,
+          //controller: _tabController,
+          tabs: <Tab>[
+            Tab(
+              text: "SMS",
             ),
-            Expanded(
-              child: Container(
-                child: TabBarView(children: [
-                  Container(
-                    child: Text("Send SMS"),
-                  ),
-                  Container(
-                    child: Text("Send Email"),
-                  ),
-                ]),
-              ),
-            )
+            Tab(
+              text: "E-MAIL",
+            ),
           ],
+          controller: _tabController,
         ),
+      ),
+      body: TabBarView(
+        children: <Widget>[
+          new SendSMS(),
+          new SendEmail(),
+        ],
+        controller: _tabController,
       ),
     );
   }
