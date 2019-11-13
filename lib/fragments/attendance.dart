@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:login/fragments/staff_attendance.dart';
-import 'package:login/fragments/view_events.dart';
-import 'package:login/fragments/view_holidays.dart';
+import 'package:login/fragments/student_attendance.dart';
 
 class Attendance extends StatefulWidget {
-  //TaskReminder(String s);
   @override
   _Attendance createState() => _Attendance();
 }
@@ -21,8 +19,8 @@ class _Attendance extends State<Attendance>
       vsync: this,
       initialIndex: 0,
     )..addListener(() {
-      setState(() {});
-    });
+        setState(() {});
+      });
   }
 
   @override
@@ -45,7 +43,6 @@ class _Attendance extends State<Attendance>
           tabs: <Tab>[
             Tab(
               text: "Student",
-
             ),
             Tab(
               text: "Staff",
@@ -56,9 +53,7 @@ class _Attendance extends State<Attendance>
       ),
       body: TabBarView(
         children: <Widget>[
-          Tab(
-            text: "hjvaldksv",
-          ),
+          StudentAttendance(),
           StaffAttendance(),
         ],
         controller: _tabController,
