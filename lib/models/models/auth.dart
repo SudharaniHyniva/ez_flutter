@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:login/classes/user.dart';
-import 'package:login/models/models/web_client.dart';
+import 'package:login/const/eaz_api.dart' as prefix0;
+import 'package:login/const/eaz_api.dart';
+import 'package:login/models/models/CommunicationManager.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:native_widgets/native_widgets.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -18,107 +20,176 @@ class AuthModel extends Model {
     @required String username,
     @required String password,
   }) async {
-    try{
-    String _username = username;
-    String _password = password;
+    try {
+      String _username = username;
+      String _password = password;
 
-    var _login={"username":"$_username","password":"$_password"} ;
-    var login = await WebClient(User(token: null)).post(apiURL+"/api/authenticate",json.encode(_login));
-    //print(_data122);
-    SharedPreferences.getInstance().then((prefs) {
-      prefs.setString("saved_username", _username);
-    });
-    if(login == "200"){
-      return true;
-    }else
-      return false;
-    }
-    catch  (e) {
-  print('Error with URL: $e');
-  }
-
-  }
-
-  // ignore: missing_return
-  Future<bool> changePassword ({
-    @required String oldPassword,
-    @required String newPassword,
-    @required String confirmUsername,
-  })async{
-   try{
-      String _oldPassword = oldPassword;
-      String _newPassword = newPassword;
-      String _confirmUsername = confirmUsername;
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _username = _prefs.getString("saved_username") ?? "";
-      var _changePassword={"oldPassword":"$_oldPassword","newPassword":"$_newPassword","userId":"","username":"$_username"};
-      var changePassword= await WebClient(User(token: null)).post(apiURL+"/api/changePassword", json.encode(_changePassword));
-      //print(_data11);
-      if(changePassword=="1000"){
+      var _login = {"username": "$_username", "password": "$_password"};
+      var login = await Login(User(token: null))
+          .post(apiURL + prefix0.login, json.encode(_login));
+      //print(_data122);
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setString("saved_username", _username);
+      });
+      if (login == "200") {
         return true;
-      }else
+      } else
         return false;
-    }catch (e){
-         print('Error with URL: $e');
-    }
-  }
-
-    // ignore: missing_return
-    Future<bool> forgotPassword ({
-      @required String username,
-    })async{
-      try{
-        String _username = username;
-        var _forgotPassword={"mobileNumber":"$_username"};
-        var changePassword= await WebClient(User(token: null)).post(apiURL+"/api/forgotPasswordSendOTP", json.encode(_forgotPassword));
-        SharedPreferences.getInstance().then((prefs) {
-          prefs.setString("mobileNumber", _username);
-        });
-        if(changePassword=="1000"){
-          return true;
-        }else
-          return false;
-      }catch (e){
-        print('Error with URL: $e');
-      }
-    }
-
-  // ignore: missing_return
-  Future<bool> submitOTP ({
-    @required String otp,
-  })async{
-    try{
-      String _otp = otp;
-      SharedPreferences _prefs = await SharedPreferences.getInstance();
-      var _username = _prefs.getString("mobileNumber") ?? "";
-      var _forgotPassword={"mobileNumber":"$_username","otp":"$_otp"};
-      var changePassword= await WebClient(User(token: null)).post(apiURL+"/api/verifyForgotPasswordOTP", json.encode(_forgotPassword));
-      if(changePassword=="1000"){
-        return true;
-      }else
-        return false;
-    }catch (e){
+    } catch (e) {
       print('Error with URL: $e');
     }
   }
 
   // ignore: missing_return
-  Future<bool> resetPassword ({
+  Future<bool> changePassword({
+    @required String oldPassword,
+    @required String newPassword,
+    @required String confirmUsername,
+  }) async {
+    try {
+      String _oldPassword = oldPassword;
+      String _newPassword = newPassword;
+      String _confirmUsername = confirmUsername;
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var _username = _prefs.getString("saved_username") ?? "";
+      var _changePassword = {
+        "oldPassword": "$_oldPassword",
+        "newPassword": "$_newPassword",
+        "userId": "",
+        "username": "$_username"
+      };
+      var changePassword = await ChangePassword(User(token: null))
+          .post(apiURL + change_password, json.encode(_changePassword));
+      //print(_data11);
+      if (changePassword == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: missing_return
+  Future<bool> forgotPassword({
+    @required String username,
+  }) async {
+    try {
+      String _username = username;
+      var _forgotPassword = {"mobileNumber": "$_username"};
+      var changePassword = await ForgotPassword(User(token: null))
+          .post(apiURL + send_OTP, json.encode(_forgotPassword));
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setString("mobileNumber", _username);
+      });
+      if (changePassword == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: missing_return
+  Future<bool> submitOTP({
+    @required String otp,
+  }) async {
+    try {
+      String _otp = otp;
+      SharedPreferences _prefs = await SharedPreferences.getInstance();
+      var _username = _prefs.getString("mobileNumber") ?? "";
+      var _forgotPassword = {"mobileNumber": "$_username", "otp": "$_otp"};
+      var changePassword = await SubmitOTP(User(token: null))
+          .post(apiURL + forgot_password, json.encode(_forgotPassword));
+      if (changePassword == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: missing_return
+  Future<bool> resetPassword({
     @required String newPassword,
     @required String confirmPassword,
-  })async{
-    try{
+  }) async {
+    try {
       String _newPassword = newPassword;
       String _confirmPassword = confirmPassword;
       SharedPreferences _prefs = await SharedPreferences.getInstance();
       var _username = _prefs.getString("mobileNumber") ?? "";
-      var _forgotPassword={"oldPassword":"$_newPassword","newPassword":"$_confirmPassword","username":"$_username"};
-      var changePassword= await WebClient(User(token: null)).post(apiURL+"/api/changePassword", json.encode(_forgotPassword));
-      if(changePassword=="1000"){
+      var _forgotPassword = {
+        "oldPassword": "$_newPassword",
+        "newPassword": "$_confirmPassword",
+        "username": "$_username"
+      };
+      var changePassword = await ResetPassword(User(token: null))
+          .post(apiURL + change_password, json.encode(_forgotPassword));
+      if (changePassword == "1000") {
         return true;
-      }else
+      } else
         return false;
-    }catch (e){
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: missing_return
+  Future<bool> sendSMS({
+    @required String smsDescreption,
+    //@required String smsType,
+  }) async {
+    try {
+      String _smsDescription = smsDescreption;
+      //String _smsType = smsType;
+      // Getting Account Id
+      SharedPreferences _accountId = await SharedPreferences.getInstance();
+      var id = _accountId.getString("saved_accountId") ?? "";
+
+      // Getting custId
+      SharedPreferences _custId = await SharedPreferences.getInstance();
+      var custId = _custId.getString("saved_custId") ?? "";
+
+      //Getting AcademicYearsId
+      SharedPreferences _academicYearId = await SharedPreferences.getInstance();
+      var academicYearId =
+          _academicYearId.getString("saved_acedmicYearId") ?? "";
+
+      //Getting Receiver Type
+      SharedPreferences _receiverType = await SharedPreferences.getInstance();
+      var receiverType = _receiverType.getString("recever_type") ?? "";
+
+      var _submit = {
+        "identifier": {
+          "accountId": "$id",
+          "custId": "$custId",
+          "academicYearId": "$academicYearId"
+        },
+        "messagesVOs": [
+          {
+            "receiverType": "$receiverType",
+            "messageType": "",
+            "title": "",
+            "purposeType": "",
+            "classIds": "",
+            "messageDescription": "$_smsDescription",
+            "otherMobileNos": "",
+            "otherType": "",
+            "messageSalutation": "",
+            "status": "M"
+          }
+        ]
+      };
+      var login = await SendSMS(User(token: null))
+          .post(apiURL + send_SMS, json.encode(_submit));
+      if (login == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
       print('Error with URL: $e');
     }
   }
