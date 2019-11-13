@@ -177,8 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 onTap: () => Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (BuildContext context) =>
-                        new TabBarSMSAndEmailViewPage("sms_Email"))),
+                    builder: (BuildContext context) => new SmsAndEmail())),
               ),
               new ListTile(
                 leading: Icon(
