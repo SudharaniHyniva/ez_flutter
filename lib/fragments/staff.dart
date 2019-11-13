@@ -14,6 +14,7 @@ class StaffType {
   StaffType(this.name);
   static List<StaffType> getStaff() {
     return <StaffType>[
+      StaffType('Select Staff'),
       StaffType('All'),
       StaffType('Teaching'),
       StaffType('Non-Teaching'),
@@ -192,7 +193,13 @@ class _StaffListState extends State<Staff> {
                 future: _fetchUsers(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator());
+                    return Center(
+                        child: new Text(
+                      "Please selct staff type",
+                      style: new TextStyle(
+                        fontSize: 20.0,
+                      ),
+                    ));
                   print(snapshot.data);
                   return ListView(
                     shrinkWrap: true,
