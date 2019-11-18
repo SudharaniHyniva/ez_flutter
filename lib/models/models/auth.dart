@@ -193,4 +193,77 @@ class AuthModel extends Model {
       print('Error with URL: $e');
     }
   }
+
+  // ignore: missing_return
+  Future<bool> applyLeave({
+    @required String leaveDescreption,
+    @required String lastDate,
+    @required String startDate,
+  }) async {
+    try {
+      String _leaveDescreption = leaveDescreption;
+      String _starDate = startDate;
+      String _endDate = lastDate;
+      // Getting Account Id
+      SharedPreferences _accountId = await SharedPreferences.getInstance();
+      var id = _accountId.getString("saved_accountId") ?? "";
+
+      // Getting custId
+      SharedPreferences _custId = await SharedPreferences.getInstance();
+      var custId = _custId.getString("saved_custId") ?? "";
+
+      //Getting AcademicYearsId
+      SharedPreferences _academicYearId = await SharedPreferences.getInstance();
+      var academicYearId =
+          _academicYearId.getString("saved_acedmicYearId") ?? "";
+
+      SharedPreferences _receiverType = await SharedPreferences.getInstance();
+      var _leavesType = _receiverType.getString("leave_type") ?? "";
+
+      var _submit = {
+        "accountId": "$id",
+        "appliedBy": "S",
+        "description": "$_leaveDescreption",
+        "endDate": "$_endDate",
+        "halfDayLeave": false,
+        "id": 0,
+        "leaveSessionType": "",
+        "leaveStatus": "P",
+        "leaveType": "$_leavesType",
+        "leavesCount": "",
+        "startDate": "$_starDate",
+        "supervisorId": 0,
+        "identifier": {
+          "accountId": "$id",
+          "custId": "$custId",
+          "academicYearId": "$academicYearId"
+        }
+      };
+      var login = await ApplyLeave(User(token: null))
+          .post(apiURL + applyLeaves, json.encode(_submit));
+      if (login == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: missing_return
+  Future<bool> deleteLeave({
+    @required String leaveId,
+  }) async {
+    try {
+      String _leaveIds = leaveId;
+      var login = await DeleteLeave(User(token: null))
+          .delete(apiURL+deleteLeaves+_leaveIds);
+      if (login == "1021") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
 }
