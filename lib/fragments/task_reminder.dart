@@ -70,7 +70,7 @@ class _TaskReminder extends State<TaskReminder>
       ),
       floatingActionButton: _tabController.index ==0
           ? FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.pink,
         child: Icon(Icons.add),
         onPressed: () {Navigator.push(
           context,
@@ -78,7 +78,7 @@ class _TaskReminder extends State<TaskReminder>
         );},
       )
           : FloatingActionButton(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.pink,
         child: Icon(Icons.add),
         onPressed: () {Navigator.push(
           context,

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:login/classes/Events.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewEvents extends StatefulWidget {
   @override
@@ -20,7 +22,7 @@ class _ViewEvents extends State<ViewEvents> {
   }
 
   //Getting the List of tasks
-  final String uri = 'https://eazyschool.in/api/event/319398/A';
+  //final String uri = 'https://eazyschool.in/api/event/319398/A';
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
@@ -28,8 +30,9 @@ class _ViewEvents extends State<ViewEvents> {
   };
 
   Future<List<EventsVoList>> _fetchUsers() async {
-    var response = await http.get(uri, headers: headers);
-    print(uri);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/api/event/"+id+"/A", headers: headers);
     if (response.statusCode == 200) {
       final items = json.decode(response.body)['eventsVoList'].cast<Map<String, dynamic>>();
       print(items);

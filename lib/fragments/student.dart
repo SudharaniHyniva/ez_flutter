@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/students.dart';
 import 'package:login/classes/users.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Student extends StatefulWidget {
   Student(String s);
@@ -17,17 +19,16 @@ class Student extends StatefulWidget {
 
 class StudentClassList extends State<Student> {
   int _currentUser;
-
-  final String url = 'https://eazyschool.in//api/class/319398/A';
-  final String url1 = 'https://eazyschool.in/api/studentsDetails/319398/A';
-
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json"
   };
   Future<List<ClassNameAndSection>> _fetchUsers() async {
-    var response = await http.get(url, headers: headers);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+
+    var response = await http.get(apiURL+"/api/class/"+id+"/A", headers: headers);
     if (response.statusCode == 200) {
       final items = json
           .decode(response.body)['classNameVOs']
@@ -53,9 +54,10 @@ class StudentClassList extends State<Student> {
   }
 
   Future<List<viewStudentPersonAccountDetailsVOs>> _fetchUsers1() async {
-    var response = await http.get(url1, headers: headers);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/api/studentsDetails/"+id+"/A", headers: headers);
     if (response.statusCode == 200) {
-      //  print(_currentUser);
       final items = json
           .decode(response.body)['viewStudentPersonAccountDetailsVOs']
           .cast<Map<String, dynamic>>();
@@ -108,7 +110,6 @@ class StudentClassList extends State<Student> {
                         setState(() {
                           _currentUser = value.studyClassId;
                         });
-                        return ListView();
                       },
                       isExpanded: true,
                     );

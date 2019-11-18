@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:login/classes/viewTasks.dart';
 import 'package:http/http.dart' as http;
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ViewTasks extends StatefulWidget {
@@ -20,7 +22,7 @@ class _ViewTasksState extends State<ViewTasks> {
     super.dispose();
   }
   //Getting the List of tasks
-  final String uri = 'https://eazyschool.in/api/taskdetails/319398';
+ // final String uri = 'https://eazyschool.in/api/taskdetails/319398';
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
@@ -28,8 +30,9 @@ class _ViewTasksState extends State<ViewTasks> {
   };
 
   Future<List<TaskDetails>> _fetchUsers() async {
-      var response = await http.get(uri, headers: headers);
-      print(uri);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+      var response = await http.get(apiURL+"/api/taskdetails/"+id, headers: headers);
       if (response.statusCode == 200) {
         final items = json.decode(response.body)['taskDetails'].cast<Map<String, dynamic>>();
         print(items);

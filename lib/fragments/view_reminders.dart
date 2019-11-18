@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:login/classes/ViewReminder.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ViewReminders extends StatefulWidget {
   @override
@@ -20,7 +22,6 @@ class _ViewRemindersState extends State<ViewReminders> {
   }
 
   //Getting the List of tasks
-  final String uri = 'https://eazyschool.in/api/reminderdetails/319398';
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
@@ -28,8 +29,9 @@ class _ViewRemindersState extends State<ViewReminders> {
   };
 
   Future<List<Reminders>> _fetchUsers() async {
-    var response = await http.get(uri, headers: headers);
-    print(uri);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/reminderdetails/"+id, headers: headers);
     if (response.statusCode == 200) {
       final items = json.decode(response.body)['reminders'].cast<Map<String, dynamic>>();
       print(items);
@@ -51,7 +53,11 @@ class _ViewRemindersState extends State<ViewReminders> {
           child: FutureBuilder<List<Reminders>>(
             future: _fetchUsers(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData) return Center(child: Text("Currently there are no reminders are added."));
+              if (!snapshot.hasData) return Center(child: Text("Currently there are no reminders are added.",style:
+                new TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.red
+                ),));
               print(snapshot.data);
               return ListView(
                 shrinkWrap: true,
