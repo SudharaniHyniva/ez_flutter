@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/staff.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Staff extends StatefulWidget {
   Staff(String s);
@@ -54,7 +56,6 @@ class _StaffListState extends State<Staff> {
     });
   }
 
-  final String uri = 'https://eazyschool.in/api/staffDetails/319398/A';
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
@@ -63,10 +64,11 @@ class _StaffListState extends State<Staff> {
 
   // ignore: missing_return
   Future<List<staffPersonAccountDetailsVOS>> _fetchUsers() async {
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
     // Getting All Staff Details
     if (_selectedStafff.name == 'All') {
-      var response = await http.get(uri, headers: headers);
-      print(uri);
+      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -86,8 +88,7 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Teaching Staff Details
     else if (_selectedStafff.name == 'Teaching') {
-      var response = await http.get(uri, headers: headers);
-      print(uri);
+      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -113,8 +114,7 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Non-Teaching Staff Details
     else if (_selectedStafff.name == 'Non-Teaching') {
-      var response = await http.get(uri, headers: headers);
-      print(uri);
+      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -141,8 +141,7 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Management Staff Details
     else if (_selectedStafff.name == 'Management') {
-      var response = await http.get(uri, headers: headers);
-      print(uri);
+      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']

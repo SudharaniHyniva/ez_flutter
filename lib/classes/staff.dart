@@ -117,6 +117,14 @@ class staffPersonAccountDetailsVOS{
   String imageUrl;
   int academicYearId;
   int custId;
+  bool isSwitched = false;
+
+  void setIsSwitched (bool isSwitched){
+    this.isSwitched = isSwitched;
+  }
+  bool getIsSwitched(){
+    return isSwitched;
+  }
 
   staffPersonAccountDetailsVOS({
     this.staffId,
