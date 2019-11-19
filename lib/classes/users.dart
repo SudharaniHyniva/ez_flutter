@@ -82,7 +82,5 @@ class StudyClassList{
 
 class ClassNameAndSection{
   String classNameAndSection;
-
-
-
+  int studyClassId;
 }
