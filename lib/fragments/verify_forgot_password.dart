@@ -71,7 +71,7 @@ class CreateAccountState extends State<OtpVerification> {
             ListTile(
               title: NativeButton(
                 child: Text(
-                  'Sumit',
+                  'Submit',
                   textScaleFactor: textScaleFactor,
                   style: TextStyle(color: Colors.white),
                 ),
