@@ -6,6 +6,10 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/students.dart';
 import 'package:login/classes/users.dart';
+import 'package:login/fragments/ViewStudentDetails.dart';
+import 'package:login/fragments/single_sms.dart';
+import 'package:login/services/call_and_message_service.dart';
+import 'package:login/services/service_locator.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -18,6 +22,8 @@ class Student extends StatefulWidget {
 }
 
 class StudentClassList extends State<Student> {
+  String  _currentClass;
+  final CallsAndMessagesService _service = locator<CallsAndMessagesService>();
   int _currentUser;
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
@@ -106,17 +112,28 @@ class StudentClassList extends State<Student> {
                                 value: user,
                               ))
                           .toList(),
-                      onChanged: (ClassNameAndSection value) {
+                      onChanged: (ClassNameAndSection values) {
                         setState(() {
-                          _currentUser = value.studyClassId;
+                          _currentClass = values.classNameAndSection;
+                          _currentUser = values.studyClassId;
                         });
                       },
-                      isExpanded: true,
+                      isExpanded: false,
                     );
                   }),
             ),
+            SizedBox(height: 0.0),
+            _currentClass != null
+                ? Text("Selected Class: "+_currentClass,style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.red
+            ),)
+                : Text("Please select the class",style: new TextStyle(
+                fontSize: 20.0,
+                color: Colors.red
+            ),),
             Container(
-              height: 550.0,
+              height: 520.0,
               child: FutureBuilder<List<viewStudentPersonAccountDetailsVOs>>(
                 future: _fetchUsers1(),
                 builder: (context, snapshot) {
@@ -133,6 +150,47 @@ class StudentClassList extends State<Student> {
                                     NetworkImage(user.imageUrl, scale: 1.0),
                                 backgroundColor: Colors.red,
                               ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          new IconButton(
+                              icon: new Icon(Icons.call),
+                              color: Colors.green,
+                              iconSize: 30.0,
+                            onPressed: () =>
+                                _service.call(user.mobileNumber),),
+                          new IconButton(
+                              icon: new Icon(Icons.message),
+                              color: Colors.orange,
+                              iconSize: 30.0,
+                            onPressed: ()  {
+                              String _mobilenumber= user.mobileNumber;
+                              print(_mobilenumber);
+                              SharedPreferences.getInstance().then((prefs) {
+                                prefs.setString("staff_person_number", _mobilenumber);
+                              });
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => SingleSMS()),
+                              );}
+                            /*=>
+                                _service.sendSms(user.mobileNumber),*/
+                          )
+                        ],
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ViewStudentDetails(
+                                firstName:user.firstName,
+                                lastName: user.lastName,
+                                mobileNumber: user.mobileNumber,
+                                image: user.imageUrl,
+                            ),
+                          ),
+                        );
+                      },
                             ))
                         .toList(),
                   );
