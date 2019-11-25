@@ -127,7 +127,7 @@ class _SendSMS extends State<SendSMS> {
                       content: Row(
                         children: <Widget>[
                           NativeLoadingIndicator(),
-                          Text("Logging In...")
+                          Text("Sending message...")
                         ],
                       ),
                     );
