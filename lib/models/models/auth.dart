@@ -255,10 +255,125 @@ class AuthModel extends Model {
     @required String leaveId,
   }) async {
     try {
-      String _leaveIds = leaveId;
+      //Getting deleting leave id
+      SharedPreferences _leaveIds = await SharedPreferences.getInstance();
+      var _leaveId = _leaveIds.getString("delete_leave_id") ?? "";
+
       var login = await DeleteLeave(User(token: null))
-          .delete(apiURL+deleteLeaves+_leaveIds);
+          .delete(apiURL + deleteLeaves + _leaveId);
       if (login == "1021") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: non_constant_identifier_names, missing_return
+  Future<bool> SendSingleStudentSMS({
+    @required String smsDescreption,
+  }) async {
+    try {
+      String _smsDescription = smsDescreption;
+      //String _smsType = smsType;
+      SharedPreferences _personAccountId =
+          await SharedPreferences.getInstance();
+      var personId = _personAccountId.getString("staff_person_number") ?? "";
+      // Getting Account Id
+      SharedPreferences _accountId = await SharedPreferences.getInstance();
+      var id = _accountId.getString("saved_accountId") ?? "";
+
+      // Getting custId
+      SharedPreferences _custId = await SharedPreferences.getInstance();
+      var custId = _custId.getString("saved_custId") ?? "";
+
+      //Getting AcademicYearsId
+      SharedPreferences _academicYearId = await SharedPreferences.getInstance();
+      var academicYearId =
+          _academicYearId.getString("saved_acedmicYearId") ?? "";
+
+      var _submit = {
+        "identifier": {
+          "accountId": "$id",
+          "custId": "$custId",
+          "academicYearId": "$academicYearId"
+        },
+        "messagesVOs": [
+          {
+            "receiverType": "",
+            "messageType": "",
+            "title": "",
+            "purposeType": "",
+            "classIds": "",
+            "messageDescription": "$_smsDescription",
+            "otherMobileNos": "",
+            "otherType": "",
+            "messageSalutation": "",
+            "status": "M",
+            "studentAccountIds": "$personId"
+          }
+        ]
+      };
+      var send = await SendSMS(User(token: null))
+          .post(apiURL + send_SMS, json.encode(_submit));
+      if (send == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
+  // ignore: non_constant_identifier_names, missing_return
+  Future<bool> SendSingleStaffSMS({
+    @required String smsDescreption,
+  }) async {
+    try {
+      String _smsDescription = smsDescreption;
+      //String _smsType = smsType;
+      SharedPreferences _personAccountId =
+          await SharedPreferences.getInstance();
+      var personId = _personAccountId.getString("staff_person_number") ?? "";
+      // Getting Account Id
+      SharedPreferences _accountId = await SharedPreferences.getInstance();
+      var id = _accountId.getString("saved_accountId") ?? "";
+
+      // Getting custId
+      SharedPreferences _custId = await SharedPreferences.getInstance();
+      var custId = _custId.getString("saved_custId") ?? "";
+
+      //Getting AcademicYearsId
+      SharedPreferences _academicYearId = await SharedPreferences.getInstance();
+      var academicYearId =
+          _academicYearId.getString("saved_acedmicYearId") ?? "";
+
+      var _submit = {
+        "identifier": {
+          "accountId": "$id",
+          "custId": "$custId",
+          "academicYearId": "$academicYearId"
+        },
+        "messagesVOs": [
+          {
+            "receiverType": "S",
+            "messageType": "",
+            "title": "",
+            "purposeType": "",
+            "classIds": "",
+            "messageDescription": "$_smsDescription",
+            "otherMobileNos": "",
+            "otherType": "",
+            "messageSalutation": "",
+            "status": "M",
+            "studentAccountIds": "$personId"
+          }
+        ]
+      };
+      var send = await SendSMS(User(token: null))
+          .post(apiURL + send_SMS, json.encode(_submit));
+      if (send == "1000") {
         return true;
       } else
         return false;
