@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:login/classes/students.dart';
 import 'package:login/classes/users.dart';
 import 'package:login/fragments/ViewStudentDetails.dart';
-import 'package:login/fragments/single_sms.dart';
+import 'package:login/fragments/single_student_sms.dart';
 import 'package:login/services/call_and_message_service.dart';
 import 'package:login/services/service_locator.dart';
 import 'package:login/utils/webConfig.dart';
@@ -22,7 +22,7 @@ class Student extends StatefulWidget {
 }
 
 class StudentClassList extends State<Student> {
-  String  _currentClass;
+  String _currentClass;
   final CallsAndMessagesService _service = locator<CallsAndMessagesService>();
   int _currentUser;
   Map<String, String> headers = {
@@ -34,7 +34,8 @@ class StudentClassList extends State<Student> {
     SharedPreferences _accountId = await SharedPreferences.getInstance();
     var id = _accountId.getString("saved_accountId") ?? "";
 
-    var response = await http.get(apiURL+"/api/class/"+id+"/A", headers: headers);
+    var response =
+        await http.get(apiURL + "/api/class/" + id + "/A", headers: headers);
     if (response.statusCode == 200) {
       final items = json
           .decode(response.body)['classNameVOs']
@@ -62,7 +63,8 @@ class StudentClassList extends State<Student> {
   Future<List<viewStudentPersonAccountDetailsVOs>> _fetchUsers1() async {
     SharedPreferences _accountId = await SharedPreferences.getInstance();
     var id = _accountId.getString("saved_accountId") ?? "";
-    var response = await http.get(apiURL+"/api/studentsDetails/"+id+"/A", headers: headers);
+    var response = await http.get(apiURL + "/api/studentsDetails/" + id + "/A",
+        headers: headers);
     if (response.statusCode == 200) {
       final items = json
           .decode(response.body)['viewStudentPersonAccountDetailsVOs']
@@ -124,14 +126,14 @@ class StudentClassList extends State<Student> {
             ),
             SizedBox(height: 0.0),
             _currentClass != null
-                ? Text("Selected Class: "+_currentClass,style: new TextStyle(
-                fontSize: 20.0,
-                color: Colors.red
-            ),)
-                : Text("Please select the class",style: new TextStyle(
-                fontSize: 20.0,
-                color: Colors.red
-            ),),
+                ? Text(
+                    "Selected Class: " + _currentClass,
+                    style: new TextStyle(fontSize: 20.0, color: Colors.red),
+                  )
+                : Text(
+                    "Please select the class",
+                    style: new TextStyle(fontSize: 20.0, color: Colors.red),
+                  ),
             Container(
               height: 520.0,
               child: FutureBuilder<List<viewStudentPersonAccountDetailsVOs>>(
@@ -150,47 +152,53 @@ class StudentClassList extends State<Student> {
                                     NetworkImage(user.imageUrl, scale: 1.0),
                                 backgroundColor: Colors.red,
                               ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          new IconButton(
-                              icon: new Icon(Icons.call),
-                              color: Colors.green,
-                              iconSize: 30.0,
-                            onPressed: () =>
-                                _service.call(user.mobileNumber),),
-                          new IconButton(
-                              icon: new Icon(Icons.message),
-                              color: Colors.orange,
-                              iconSize: 30.0,
-                            onPressed: ()  {
-                              String _mobilenumber= user.mobileNumber;
-                              print(_mobilenumber);
-                              SharedPreferences.getInstance().then((prefs) {
-                                prefs.setString("staff_person_number", _mobilenumber);
-                              });
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(builder: (context) => SingleSMS()),
-                              );}
-                            /*=>
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new IconButton(
+                                    icon: new Icon(Icons.call),
+                                    color: Colors.green,
+                                    iconSize: 30.0,
+                                    onPressed: () =>
+                                        _service.call(user.mobileNumber),
+                                  ),
+                                  new IconButton(
+                                      icon: new Icon(Icons.message),
+                                      color: Colors.orange,
+                                      iconSize: 30.0,
+                                      onPressed: () {
+                                        String _personAccountId =
+                                            user.accountId.toString();
+                                        SharedPreferences.getInstance()
+                                            .then((prefs) {
+                                          prefs.setString("staff_person_number",
+                                              _personAccountId);
+                                        });
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SingleStudentSMS()),
+                                        );
+                                      }
+                                      /*=>
                                 _service.sendSms(user.mobileNumber),*/
-                          )
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ViewStudentDetails(
-                                firstName:user.firstName,
-                                lastName: user.lastName,
-                                mobileNumber: user.mobileNumber,
-                                image: user.imageUrl,
-                            ),
-                          ),
-                        );
-                      },
+                                      )
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewStudentDetails(
+                                      firstName: user.firstName,
+                                      lastName: user.lastName,
+                                      mobileNumber: user.mobileNumber,
+                                      image: user.imageUrl,
+                                    ),
+                                  ),
+                                );
+                              },
                             ))
                         .toList(),
                   );

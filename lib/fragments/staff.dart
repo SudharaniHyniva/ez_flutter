@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/staff.dart';
+import 'package:login/fragments/ViewStaffDetails.dart';
+import 'package:login/fragments/single_staff_sms.dart';
+import 'package:login/fragments/single_student_sms.dart';
+import 'package:login/services/call_and_message_service.dart';
+import 'package:login/services/service_locator.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -29,11 +34,16 @@ class _StaffListState extends State<Staff> {
   List<StaffType> _staffList = StaffType.getStaff();
   List<DropdownMenuItem<StaffType>> _dropdownStaffItems;
   StaffType _selectedStafff;
+  bool activeSearch;
+  final CallsAndMessagesService _service = locator<CallsAndMessagesService>();
+  // final String number = "1234567890";
+  //final String email = "dancamdev@example.com";
 
   @override
   void initState() {
     _dropdownStaffItems = buildDropdownMenuItems(_staffList);
     _selectedStafff = _dropdownStaffItems[0].value;
+    activeSearch = false;
     super.initState();
   }
 
@@ -68,7 +78,8 @@ class _StaffListState extends State<Staff> {
     var id = _accountId.getString("saved_accountId") ?? "";
     // Getting All Staff Details
     if (_selectedStafff.name == 'All') {
-      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
+      var response = await http.get(apiURL + "/api/staffDetails/" + id + "/A",
+          headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -88,7 +99,8 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Teaching Staff Details
     else if (_selectedStafff.name == 'Teaching') {
-      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
+      var response = await http.get(apiURL + "/api/staffDetails/" + id + "/A",
+          headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -114,7 +126,8 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Non-Teaching Staff Details
     else if (_selectedStafff.name == 'Non-Teaching') {
-      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
+      var response = await http.get(apiURL + "/api/staffDetails/" + id + "/A",
+          headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -141,7 +154,8 @@ class _StaffListState extends State<Staff> {
     }
     // Getting Management Staff Details
     else if (_selectedStafff.name == 'Management') {
-      var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
+      var response = await http.get(apiURL + "/api/staffDetails/" + id + "/A",
+          headers: headers);
       if (response.statusCode == 200) {
         final items = json
             .decode(response.body)['staffPersonAccountDetailsVOS']
@@ -219,6 +233,54 @@ class _StaffListState extends State<Staff> {
                                     NetworkImage(user.imageUrl, scale: 1.0),
                                 backgroundColor: Colors.red,
                               ),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  new IconButton(
+                                    icon: new Icon(Icons.call),
+                                    color: Colors.green,
+                                    iconSize: 30.0,
+                                    onPressed: () =>
+                                        _service.call(user.mobileNumber),
+                                  ),
+                                  new IconButton(
+                                    icon: new Icon(Icons.message),
+                                    color: Colors.orange,
+                                    iconSize: 30.0,
+                                    onPressed: () {
+                                      String _personAccountId =
+                                          user.accountId.toString();
+                                      SharedPreferences.getInstance()
+                                          .then((prefs) {
+                                        prefs.setString("staff_person_number",
+                                             _personAccountId);
+                                      });
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SingleStaffSMS()),
+                                      );
+                                    } /*=>
+                                        _service.sendSms(user.mobileNumber)*/
+                                    ,
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ViewStaffDetails(
+                                        firstName: user.firstName,
+                                        lastName: user.lastName,
+                                        mobileNumber: user.mobileNumber,
+                                        role: user.roleName,
+                                        address: user.addressLine1,
+                                        addess2: user.addressLine2,
+                                        image: user.imageUrl),
+                                  ),
+                                );
+                              },
                             ))
                         .toList(),
                   );
