@@ -41,13 +41,14 @@ class _SingleStudentSMS extends State<SingleStudentSMS> {
                 children: <Widget>[
                   ListTile(
                     title: TextFormField(
-                      decoration: InputDecoration(labelText: 'SMS Text'),
+                      decoration: InputDecoration(labelText: 'Enter message content...'),
                       validator: (val) =>
                       val.length < 1 ? 'Enter SMS Text' : null,
                       onSaved: (val) => _SMSContent = val,
                       obscureText: false,
                       controller: _controllerText,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 5,
                       autocorrect: false,
                     ),
                   ),
