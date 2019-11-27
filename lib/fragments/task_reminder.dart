@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:login/fragments/add_Task.dart';
 import 'package:login/fragments/view_reminders.dart';
 import 'package:login/fragments/view_tasks.dart';
-
 import 'add_Reminder.dart';
 
 class TaskReminder extends StatefulWidget {
-  //TaskReminder(String s);
   @override
   _TaskReminder createState() => _TaskReminder();
 }

@@ -140,10 +140,13 @@ class AuthModel extends Model {
   // ignore: missing_return
   Future<bool> sendSMS({
     @required String smsDescreption,
-    //@required String smsType,
+    @required String classId,
+    @required String otherNo,
   }) async {
     try {
       String _smsDescription = smsDescreption;
+      String _classId = classId;
+      String _otherNumbers = otherNo;
       //String _smsType = smsType;
       // Getting Account Id
       SharedPreferences _accountId = await SharedPreferences.getInstance();
@@ -174,9 +177,9 @@ class AuthModel extends Model {
             "messageType": "",
             "title": "",
             "purposeType": "",
-            "classIds": "",
+            "classIds": "$_classId",
             "messageDescription": "$_smsDescription",
-            "otherMobileNos": "",
+            "otherMobileNos": "$_otherNumbers",
             "otherType": "",
             "messageSalutation": "",
             "status": "M"
@@ -381,4 +384,49 @@ class AuthModel extends Model {
       print('Error with URL: $e');
     }
   }
+  Future<bool> AddTasks({
+    @required String taskName,
+    @required String taskDescreption,
+    @required String taskCompletionDate,
+    @required String reminderType,
+    @required String taskSpecificDate,
+    @required String communicationType,
+    @required String assignedTo,
+  }) async {
+    try {
+      String _taskName = taskName;
+      String _taskDescreption = taskDescreption;
+      String _taskCompletionDate = taskCompletionDate;
+      String _taskSpecificDate = taskSpecificDate;
+      String _assignedTo = assignedTo;
+
+      //String _smsType = smsType;
+      SharedPreferences _personAccountId =
+      await SharedPreferences.getInstance();
+      var personId = _personAccountId.getString("staff_person_number") ?? "";
+      // Getting Account Id
+      SharedPreferences _accountId = await SharedPreferences.getInstance();
+      var id = _accountId.getString("saved_accountId") ?? "";
+
+      // Getting custId
+      SharedPreferences _custId = await SharedPreferences.getInstance();
+      var custId = _custId.getString("saved_custId") ?? "";
+
+      //Getting AcademicYearsId
+      SharedPreferences _academicYearId = await SharedPreferences.getInstance();
+      var academicYearId =
+          _academicYearId.getString("saved_acedmicYearId") ?? "";
+
+      var _submit = "";
+      var send = await SendSMS(User(token: null))
+          .post(apiURL + send_SMS, json.encode(_submit));
+      if (send == "1000") {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print('Error with URL: $e');
+    }
+  }
+
 }

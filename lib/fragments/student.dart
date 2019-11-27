@@ -34,30 +34,61 @@ class StudentClassList extends State<Student> {
     SharedPreferences _accountId = await SharedPreferences.getInstance();
     var id = _accountId.getString("saved_accountId") ?? "";
 
-    var response =
+    SharedPreferences _roleType = await SharedPreferences.getInstance();
+    var roleType = _roleType.getString("role_name") ?? "";
+
+      if(roleType=='ROLE_ADMINOFFICER'){
+        var response =
         await http.get(apiURL + "/api/class/" + id + "/A", headers: headers);
-    if (response.statusCode == 200) {
-      final items = json
-          .decode(response.body)['classNameVOs']
-          .cast<Map<String, dynamic>>();
-      List<ClassNameAndSection> classList = new List<ClassNameAndSection>();
-      items.map<classNameVOs>((items) {
-        var _item = classNameVOs.fromJson(items);
-        for (var i = 0; i < _item.studyClassList.length; i++) {
-          ClassNameAndSection cls = new ClassNameAndSection();
-          var sections =
-              _item.className + " " + _item.studyClassList[i].section;
-          cls.classNameAndSection = sections;
-          cls.studyClassId = _item.studyClassList[i].id;
-          classList.add(cls);
+        if (response.statusCode == 200) {
+          final items = json
+              .decode(response.body)['classNameVOs']
+              .cast<Map<String, dynamic>>();
+          List<ClassNameAndSection> classList = new List<ClassNameAndSection>();
+          items.map<classNameVOs>((items) {
+            var _item = classNameVOs.fromJson(items);
+            for (var i = 0; i < _item.studyClassList.length; i++) {
+              ClassNameAndSection cls = new ClassNameAndSection();
+              var sections =
+                  _item.className + " " + _item.studyClassList[i].section;
+              cls.classNameAndSection = sections;
+              cls.studyClassId = _item.studyClassList[i].id;
+              classList.add(cls);
+            }
+            print(classList.length);
+            return classNameVOs.fromJson(items);
+          }).toList();
+          return classList;
+        } else {
+          throw Exception('Failed to load internet');
         }
-        print(classList.length);
-        return classNameVOs.fromJson(items);
-      }).toList();
-      return classList;
-    } else {
-      throw Exception('Failed to load internet');
-    }
+      } else if(roleType=='ROLE_TEACHER'){
+        var response =
+        await http.get(apiURL + "/api/class/" + id + "/S", headers: headers);
+        if (response.statusCode == 200) {
+          final items = json
+              .decode(response.body)['classNameVOs']
+              .cast<Map<String, dynamic>>();
+          List<ClassNameAndSection> classList = new List<ClassNameAndSection>();
+          items.map<classNameVOs>((items) {
+            var _item = classNameVOs.fromJson(items);
+            for (var i = 0; i < _item.studyClassList.length; i++) {
+              ClassNameAndSection cls = new ClassNameAndSection();
+              var sections =
+                  _item.className + " " + _item.studyClassList[i].section;
+              cls.classNameAndSection = sections;
+              cls.studyClassId = _item.studyClassList[i].id;
+              classList.add(cls);
+            }
+            print(classList.length);
+            return classNameVOs.fromJson(items);
+          }).toList();
+          return classList;
+        } else {
+          throw Exception('Failed to load internet');
+        }
+      }
+
   }
 
   Future<List<viewStudentPersonAccountDetailsVOs>> _fetchUsers1() async {

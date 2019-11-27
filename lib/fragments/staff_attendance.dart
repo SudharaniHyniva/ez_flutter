@@ -5,6 +5,8 @@ import 'package:flutter/scheduler.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/staff.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StaffAttendance extends StatefulWidget {
   _StaffAttendance createState() => _StaffAttendance();
@@ -16,15 +18,16 @@ class _StaffAttendance extends State<StaffAttendance> {
   bool isSwitched = true;
   String _currText = 'user';
 
-  final String uri = 'https://eazyschool.in/api/staffDetails/319398/A';
+  //final String uri = 'https://eazyschool.in/api/staffDetails/319398/A';
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json"
   };
   Future<List<staffPersonAccountDetailsVOS>> _fetchUsers() async {
-    var response = await http.get(uri, headers: headers);
-    print(uri);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/api/staffDetails/"+id+"/A", headers: headers);
 
     if (response.statusCode == 200) {
       final items = json.decode(response.body)['staffPersonAccountDetailsVOS'].cast<Map<String, dynamic>>();
@@ -55,7 +58,7 @@ class _StaffAttendance extends State<StaffAttendance> {
                   return new ListView(
                     shrinkWrap: true,
                     children: snapshot.data
-                        .map((user) => CheckboxListTile(
+                        .map((user) => /*CheckboxListTile(
                       title: ListTile(
                         title: Text(user.firstName+" "+user.lastName),
                         subtitle: Text(user.roleName+" "+user.mobileNumber),
@@ -66,22 +69,42 @@ class _StaffAttendance extends State<StaffAttendance> {
                           backgroundColor: Colors.red,
                         ),
                       ),
-                      value: _isChecked,
+                      value: isSwitched,
                       onChanged: (val){
                         setState(() {
-                          _isChecked= val;
+                          isSwitched= val;
                         });
                       },
-
-                      /*value: isSwitched,
-                      onChanged: (bool val){
+                    )*/
+                    ListTile(
+                      title: Text(
+                        user.firstName + " " + user.lastName,
+                        style: new TextStyle(
+                            fontSize: 18.0, color: Colors.black),
+                      ),
+                      subtitle: Text(
+                        user.roleName + " ," + user.mobileNumber,
+                        style: new TextStyle(fontSize: 15.0),
+                      ),
+                      leading: CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage:
+                        NetworkImage(user.imageUrl, scale: 1.0),
+                        backgroundColor: Colors.red,
+                      ),
+                     /* trailing: new Checkbox(
+                          value: user.isSwitched,
+                          onChanged: (bool value){
                         setState(() {
-                          isSwitched = val;
-                          if (val==true){
-                            _currText = isSwitched.toString();
-                          }
+                          //user.isSwitched(value);
+                          user.isSwitched= value;
                         });
-                      },*/
+                          }),*/
+                      onTap: (){
+                        // ignore: unnecessary_statements
+                        user.isSwitched != user.isSwitched;
+                      },
+                     selected: true,
                     )
 
                     )

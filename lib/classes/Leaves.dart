@@ -2,7 +2,7 @@ class LeavesList{
   final int id;
   final String leaveStatus;
   final String approvalsComment;
-  final BigInt leavesCount;
+  final double leavesCount;
   final String leaveType;
   final String startDate;
   final String endDate;
@@ -36,7 +36,7 @@ class LeavesList{
       id: json['id'],
       leaveStatus: json['leaveStatus'],
       approvalsComment: json['approvalsComment'],
-     // leavesCount: json['leavesCount'],
+      leavesCount: json['leavesCount'],
       leaveType: json['leaveType'],
       startDate: json['startDate'],
       endDate: json['endDate'],

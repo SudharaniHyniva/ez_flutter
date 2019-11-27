@@ -102,6 +102,7 @@ class Student {
   }
 }
 
+// ignore: camel_case_types
 class viewStudentPersonAccountDetailsVOs{
   int studentId;
   String firstName;
@@ -125,8 +126,8 @@ class viewStudentPersonAccountDetailsVOs{
   String status;
   String transportMode;
   String description;
-  String classSectionId;
-  String accountId;
+  int classSectionId;
+  int accountId;
   String custId;
   String academicYearId;
   String boardingPointId;
@@ -186,7 +187,9 @@ class viewStudentPersonAccountDetailsVOs{
       status: json['status'],
       transportMode: json['transportMode'],
       description: json['description'],
-
+      classSectionId : json['classSectionId'],
+      accountId : json['accountId'],
+      //rollNumber: json['rollNumber']
 
     );
   }

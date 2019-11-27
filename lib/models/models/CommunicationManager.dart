@@ -66,6 +66,12 @@ class Login {
         prefs.setString("saved_acedmicYearId", _academicYearId);
       });
 
+      String _roleType =
+          '${json.decode(response.body)['role']}';
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.setString("role_name", _roleType);
+      });
+
       print("URL: $url");
       print("Body: $body");
       print("Response Code: " + response.statusCode.toString());

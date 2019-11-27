@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:login/classes/AddAssignment.dart';
 import 'package:login/classes/users.dart';
 import 'package:login/models/models/auth.dart';
 import 'package:login/utils/popUp.dart';
@@ -66,6 +67,35 @@ class _AddAssignments extends State<AddAssignments>
     }
   }
 
+  Future<List<SubjectName>> _fetchUsers1() async {
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response =
+    await http.get(apiURL + "/api/class/" + id + "/A", headers: headers);
+    if (response.statusCode == 200) {
+      final items = json
+          .decode(response.body)['studyClassList']
+          .cast<Map<String, dynamic>>();
+      List<SubjectName> classList = new List<SubjectName>();
+      items.map<classNameVOs>((items) {
+        var _item = StudySubjectList.fromJson(items);
+        for (var i = 0; i < _item.name.length; i++) {
+          SubjectName cls = new SubjectName();
+          var sections =
+              _item.name;
+          //cls.classNameAndSection = sections;
+          //cls.studyClassId = _item.studyClassList[i].id;
+          classList.add(cls);
+        }
+        print(classList.length);
+        return classNameVOs.fromJson(items);
+      }).toList();
+      return classList;
+    } else {
+      throw Exception('Failed to load internet');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _auth = ScopedModel.of<AuthModel>(context, rebuildOnChange: true);
@@ -108,6 +138,34 @@ class _AddAssignments extends State<AddAssignments>
                                   _currentUser = value.studyClassId;
                                 });
                               },
+                              isExpanded: true,
+                            );
+                          }),
+                    ),
+                  ),
+                  ListTile(
+                    title: Container(
+                      child: FutureBuilder<List<SubjectName>>(
+                          future: _fetchUsers1(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<SubjectName>>
+                              snapshot) {
+                            if (!snapshot.hasData)
+                              return CircularProgressIndicator();
+                            return DropdownButton<SubjectName>(
+                              hint: new Text('Select Class'),
+                              items: snapshot.data
+                                  .map((user) =>
+                                  DropdownMenuItem<SubjectName>(
+                                    child: Text(user.name),
+                                    value: user,
+                                  ))
+                                  .toList(),
+                              /*onChanged: (ClassNameAndSection value) {
+                                setState(() {
+                                  _currentUser = value.studyClassId;
+                                });
+                              },*/
                               isExpanded: true,
                             );
                           }),

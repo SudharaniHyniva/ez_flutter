@@ -30,6 +30,7 @@ class _AddLeaves extends State<AddLeaves> with SingleTickerProviderStateMixin {
   bool isSwitched = false;
    DateTime selectedStartDate = DateTime.now();
    DateTime selectedEndDate = DateTime.now();
+    String _count;
   String _status = 'no-action';
   String _descreption;
   final formKey = GlobalKey<FormState>();
@@ -164,14 +165,12 @@ class _AddLeaves extends State<AddLeaves> with SingleTickerProviderStateMixin {
                       },
                       onChanged: (endDates){
                         setState(()=> selectedEndDate = endDates);
-                        print(selectedEndDate);
                       },
                     ),
                   ),
-                  ListTile(
 
+                  /*ListTile(
                     title: CheckboxListTile(
-
                       title: Text("Half-Day Leave"),
                         value:isSwitched,
                         onChanged: (bool value){
@@ -180,7 +179,7 @@ class _AddLeaves extends State<AddLeaves> with SingleTickerProviderStateMixin {
                           });
                         },
                       controlAffinity: ListTileControlAffinity.leading,),
-                  ),
+                  ),*/
                   ListTile(
                     title: TextFormField(
                       decoration: InputDecoration(
@@ -195,7 +194,8 @@ class _AddLeaves extends State<AddLeaves> with SingleTickerProviderStateMixin {
                           val.length < 1 ? 'Enter Descreption' : null,
                        onSaved: (val) => _descreption = val,
                       controller: _controllerUsername,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 3,
                       autocorrect: false,
                     ),
                   ),

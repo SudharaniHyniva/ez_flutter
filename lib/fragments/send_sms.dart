@@ -1,5 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:login/classes/users.dart';
 import 'package:login/models/models/auth.dart';
+import 'package:login/services/call_and_message_service.dart';
+import 'package:login/services/service_locator.dart';
 import 'package:login/utils/popUp.dart';
 import 'package:login/utils/webConfig.dart';
 import 'package:native_widgets/native_widgets.dart';
@@ -29,9 +35,10 @@ class _SendSMS extends State<SendSMS> {
   String _status = 'no-action';
   // ignore: non_constant_identifier_names
   String _SMSContent;
+  String _otherNumbers;
   final formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController _controllerPassword;
+  TextEditingController _controllerNumber, _controllerText;
   List<SMSType> _smsList = SMSType.getType();
   List<DropdownMenuItem<SMSType>> _dropdownSMSItems;
   SMSType _selectedType;
@@ -74,6 +81,44 @@ class _SendSMS extends State<SendSMS> {
     });
   }
 
+  String _currentClass;
+  final CallsAndMessagesService _service = locator<CallsAndMessagesService>();
+  int _currentUser;
+  Map<String, String> headers = {
+    HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
+    HttpHeaders.acceptHeader: "application/json",
+    HttpHeaders.contentTypeHeader: "application/json"
+  };
+  Future<List<ClassNameAndSection>> _fetchUsers() async {
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+
+    var response =
+        await http.get(apiURL + "/api/class/" + id + "/A", headers: headers);
+    if (response.statusCode == 200) {
+      final items = json
+          .decode(response.body)['classNameVOs']
+          .cast<Map<String, dynamic>>();
+      List<ClassNameAndSection> classList = new List<ClassNameAndSection>();
+      items.map<classNameVOs>((items) {
+        var _item = classNameVOs.fromJson(items);
+        for (var i = 0; i < _item.studyClassList.length; i++) {
+          ClassNameAndSection cls = new ClassNameAndSection();
+          var sections =
+              _item.className + " " + _item.studyClassList[i].section;
+          cls.classNameAndSection = sections;
+          cls.studyClassId = _item.studyClassList[i].id;
+          classList.add(cls);
+        }
+        print(classList.length);
+        return classNameVOs.fromJson(items);
+      }).toList();
+      return classList;
+    } else {
+      throw Exception('Failed to load internet');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final _auth = ScopedModel.of<AuthModel>(context, rebuildOnChange: true);
@@ -95,6 +140,47 @@ class _SendSMS extends State<SendSMS> {
                       onChanged: onChangeDropdownItem,
                     ),
                   ),
+                  if (_selectedType.name == 'Class & section')
+                    ListTile(
+                      title: FutureBuilder<List<ClassNameAndSection>>(
+                          future: _fetchUsers(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<List<ClassNameAndSection>>
+                                  snapshot) {
+                            if (!snapshot.hasData)
+                              return CircularProgressIndicator();
+                            return DropdownButton<ClassNameAndSection>(
+                              hint: new Text('Select Class'),
+                              items: snapshot.data
+                                  .map((user) =>
+                                      DropdownMenuItem<ClassNameAndSection>(
+                                        child: Text(user.classNameAndSection),
+                                        value: user,
+                                      ))
+                                  .toList(),
+                              onChanged: (ClassNameAndSection values) {
+                                setState(() {
+                                  _currentClass = values.classNameAndSection;
+                                  _currentUser = values.studyClassId;
+                                });
+                              },
+                              isExpanded: true,
+                            );
+                          }),
+                    ),
+                  if (_selectedType.name == 'Others')
+                    ListTile(
+                      title: TextFormField(
+                        decoration:
+                            InputDecoration(labelText: 'Enter mobile number..'),
+                        validator: (val) =>
+                            val.length < 1 ? 'Enter mobile number' : null,
+                        onSaved: (val) => _otherNumbers = val,
+                        controller: _controllerNumber,
+                        keyboardType: TextInputType.number,
+                        autocorrect: false,
+                      ),
+                    ),
                   ListTile(
                     title: TextFormField(
                       decoration: InputDecoration(labelText: 'SMS Text'),
@@ -102,8 +188,9 @@ class _SendSMS extends State<SendSMS> {
                           val.length < 1 ? 'Enter SMS Text' : null,
                       onSaved: (val) => _SMSContent = val,
                       obscureText: false,
-                      controller: _controllerPassword,
-                      keyboardType: TextInputType.text,
+                      controller: _controllerText,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: 5,
                       autocorrect: false,
                     ),
                   ),
@@ -137,9 +224,10 @@ class _SendSMS extends State<SendSMS> {
 
                     _auth
                         .sendSMS(
-                      smsDescreption:
-                          _SMSContent.toString().toLowerCase().trim(),
-                    )
+                            smsDescreption:
+                                _SMSContent.toString().toLowerCase().trim(),
+                            classId: _currentUser.toString(),
+                            otherNo: _otherNumbers)
                         .then((result) {
                       try {
                         if (result) {

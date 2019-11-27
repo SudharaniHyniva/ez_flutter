@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:login/classes/students.dart';
 import 'package:login/classes/users.dart';
+import 'package:login/utils/webConfig.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentAttendance extends StatefulWidget {
   _StudentAttendance createState() => _StudentAttendance();
@@ -12,17 +14,16 @@ class StudentAttendance extends StatefulWidget {
 
 class _StudentAttendance extends State<StudentAttendance> {
   int _currentUser;
-
-  final String url = 'https://eazyschool.in//api/class/319398/A';
-  final String url1 = 'https://eazyschool.in/api/studentsDetails/319398/A';
-
+   String _selectedClass;
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
     HttpHeaders.contentTypeHeader: "application/json"
   };
   Future<List<ClassNameAndSection>> _fetchUsers() async {
-    var response = await http.get(url, headers: headers);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/api/class/"+id+"/A", headers: headers);
     if (response.statusCode == 200) {
       final items = json
           .decode(response.body)['classNameVOs']
@@ -48,7 +49,9 @@ class _StudentAttendance extends State<StudentAttendance> {
   }
 
   Future<List<viewStudentPersonAccountDetailsVOs>> _fetchUsers1() async {
-    var response = await http.get(url1, headers: headers);
+    SharedPreferences _accountId = await SharedPreferences.getInstance();
+    var id = _accountId.getString("saved_accountId") ?? "";
+    var response = await http.get(apiURL+"/api/studentsDetails/"+id+"/A", headers: headers);
     if (response.statusCode == 200) {
       //  print(_currentUser);
       final items = json
@@ -98,13 +101,26 @@ class _StudentAttendance extends State<StudentAttendance> {
                       onChanged: (ClassNameAndSection value) {
                         setState(() {
                           _currentUser = value.studyClassId;
+                          _selectedClass = value.classNameAndSection;
                         });
                         return ListView();
                       },
-                      isExpanded: true,
+
+                      //value: _selectedClass,
+                      isExpanded: false,
                     );
                   }),
             ),
+            SizedBox(height: 0.0),
+            _selectedClass != null
+                ? Text("Selected Class: "+_selectedClass,style: new TextStyle(
+              fontSize: 20.0,
+              color: Colors.red
+            ),)
+                : Text("Please select the class",style: new TextStyle(
+              fontSize: 20.0,
+              color: Colors.red
+            ),),
             Container(
               height: 500.0,
               child: FutureBuilder<List<viewStudentPersonAccountDetailsVOs>>(
@@ -115,20 +131,20 @@ class _StudentAttendance extends State<StudentAttendance> {
                   return ListView(
                     children: snapshot.data
                         .map((user) => ListTile(
-                              title: Text(user.firstName + " " + user.lastName),
-                              subtitle: Text(user.mobileNumber),
-                              leading: CircleAvatar(
-                                radius: 30.0,
-                                backgroundImage:
-                                    NetworkImage(user.imageUrl, scale: 1.0),
-                                backgroundColor: Colors.red,
-                              ),
-                            ))
+                      title: Text(user.firstName + " " + user.lastName),
+                      subtitle: Text(user.mobileNumber),
+                      leading: CircleAvatar(
+                        radius: 30.0,
+                        backgroundImage:
+                        NetworkImage(user.imageUrl, scale: 1.0),
+                        backgroundColor: Colors.red,
+                      ),
+                    ))
                         .toList(),
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),

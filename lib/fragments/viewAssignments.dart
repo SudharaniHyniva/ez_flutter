@@ -21,6 +21,7 @@ class ViewAssignments extends StatefulWidget {
 
 class StudentClassList extends State<ViewAssignments> {
   int _currentUser;
+  String _currentClass;
   Map<String, String> headers = {
     HttpHeaders.authorizationHeader: "f2e25125db9926be9731678f5c5f05e4804a85d8",
     HttpHeaders.acceptHeader: "application/json",
@@ -109,6 +110,7 @@ class StudentClassList extends State<ViewAssignments> {
                           .toList(),
                       onChanged: (ClassNameAndSection value) {
                         setState(() {
+                          _currentClass = value.classNameAndSection;
                           _currentUser = value.studyClassId;
 
                           SharedPreferences.getInstance().then((prefs) {
@@ -118,9 +120,18 @@ class StudentClassList extends State<ViewAssignments> {
                         });
                         return ListView();
                       },
-                      isExpanded: true,
+                      isExpanded: false,
                     );
                   }),
+            ),
+            _currentClass != null
+                ? Text(
+              "Selected Class: " + _currentClass,
+              style: new TextStyle(fontSize: 20.0, color: Colors.red),
+            )
+                : Text(
+              "Please select the class",
+              style: new TextStyle(fontSize: 20.0, color: Colors.red),
             ),
             Container(
               height: 550.0,
@@ -130,11 +141,11 @@ class StudentClassList extends State<ViewAssignments> {
                   if (!snapshot.hasData)
                     return Stack(
                       children: <Widget>[
-                    Center(child: new Text("There are no assignment in selected class",
+                   /* Center(child: new Text("There are no assignment in selected class",
                       style: new TextStyle(
                           fontSize: 20.0,
                           color: Colors.red
-                      ),))
+                      ),))*/
                       ],
                     );
                   return ListView(
